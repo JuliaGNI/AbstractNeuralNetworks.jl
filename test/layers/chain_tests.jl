@@ -13,14 +13,12 @@ c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
 
-p1 = initialparameters(Random.default_rng(), i, c; init=_ones!)
-p2 = initialparameters(Random.default_rng(), Float64, c; init=_ones!)
-p3 = initialparameters(Random.default_rng(), CPU(), Float64, c; init=_ones!)
-p4 = initialparameters(i, c; init=_ones!)
-p5 = initialparameters(Float64, c; init=_ones!)
-p6 = initialparameters(CPU(), Float64, c; init=_ones!)
+p1 = initialparameters(Random.default_rng(), Float64, c; init=_ones!)
+p2 = initialparameters(Random.default_rng(), CPU(), Float64, c; init=_ones!)
+p3 = initialparameters(Float64, c; init=_ones!)
+p4 = initialparameters(CPU(), Float64, c; init=_ones!)
 
-@test p1 == p2 == p3 == p4 == p5 == p6
+@test p1 == p2 == p3 == p4
 
 
 c = Chain(Dense(2, 2, x -> x))

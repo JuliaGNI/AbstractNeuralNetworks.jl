@@ -16,20 +16,11 @@ function (layer::Dense)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
 end
 
 
-function initialparameters(rng::AbstractRNG, W, b, ::Dense; init::Callable = default_initializer())
+
+function initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, layer::Dense{M,N}; init::Callable = default_initializer()) where {M,N,T}
+    W = KernelAbstractions.zeros(backend, T, N, M)
+    b = KernelAbstractions.zeros(backend, T, N)
     init(rng, W)
     init(rng, b)
     (W = W, b = b)
-end
-
-function initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, layer::Dense{M,N}; kwargs...) where {M,N,T}
-    W = KernelAbstractions.zeros(backend, T, N, M)
-    b = KernelAbstractions.zeros(backend, T, N)
-    initialparameters(rng, W, b, layer; kwargs...)
-end
-
-function initialparameters(rng::AbstractRNG, x::AbstractArray, layer::Dense{M,N}; kwargs...) where {M,N}
-    W = similar(x, N, M)
-    b = similar(x, N)
-    initialparameters(rng, W, b, layer; kwargs...)
 end
