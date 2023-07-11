@@ -1,20 +1,27 @@
 
-struct Dense{M, N, ST} <: AbstractExplicitLayer{M, N}
+struct Dense{M, N, BIAS, ST} <: AbstractExplicitLayer{M, N}
     σ::ST
 
-    Dense(m, n, σ) = new{m, n, typeof(σ)}(σ)
+    Dense(m, n, σ; use_bias = true) = new{m, n, use_bias, typeof(σ)}(σ)
 end
 
 function (layer::Dense)(x::AbstractArray, ps::NamedTuple)
-    layer.σ.(ps.W * x .+ ps.b)
+    if usebias(layer)
+        layer.σ.(ps.W * x .+ ps.b)
+    else
+        layer.σ.(ps.W * x)
+    end
 end
 
 function (layer::Dense)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
     mul!(y, ps.W, x)
-    add!(y, ps.b)
+    if usebias(layer)
+        add!(y, ps.b)
+    end
     y .= layer.σ.(y)
 end
 
+usebias(::Dense{M, N, BIAS}) where {M, N, BIAS} = BIAS
 
 
 function initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, layer::Dense{M,N}; init::Callable = default_initializer()) where {M,N,T}

@@ -19,6 +19,7 @@ module AbstractNetworks
 
 
     export Dense, Linear
+    export usebias
 
     include("layers/abstract.jl")
     include("layers/dense.jl")
