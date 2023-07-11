@@ -5,3 +5,4 @@ using SafeTestsets
 @safetestset "Linear Layer                                                                    " begin include("layers/linear_layer_tests.jl") end
 @safetestset "Chain                                                                           " begin include("layers/chain_tests.jl") end
 @safetestset "Architecture                                                                    " begin include("architecture_tests.jl") end
+@safetestset "Neural Network                                                                  " begin include("neural_network_tests.jl") end

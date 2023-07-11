@@ -36,4 +36,9 @@ module AbstractNetworks
 
     include("chain.jl")
 
+
+    export NeuralNetwork
+
+    include("neural_network.jl")
+
 end
