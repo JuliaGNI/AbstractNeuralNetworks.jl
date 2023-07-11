@@ -1,6 +1,5 @@
 module AbstractNetworks
 
-    using Base: Callable
     using KernelAbstractions
     using LinearAlgebra
     using Random

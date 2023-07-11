@@ -11,7 +11,5 @@ c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
 
-nn1 = NeuralNetwork(c, Float64)
-nn1 = NeuralNetwork(c, CPU(), Float64)
-
-@test nn1 == nn2
+@test_nowarn NeuralNetwork(c, Float64; init = OneInitializer())
+@test_nowarn NeuralNetwork(c, CPU(), Float64; init = OneInitializer())

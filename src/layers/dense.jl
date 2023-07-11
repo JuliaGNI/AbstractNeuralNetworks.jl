@@ -24,7 +24,7 @@ end
 usebias(::Dense{M, N, BIAS}) where {M, N, BIAS} = BIAS
 
 
-function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N}; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,T}
+function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,T}
     W = KernelAbstractions.zeros(backend, T, N, M)
     b = KernelAbstractions.zeros(backend, T, N)
     init(rng, W)

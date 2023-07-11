@@ -8,8 +8,8 @@ abstract type Model end
     Returns the initial parameters of a model, i.e., a layer or chain.
 
 ```
-initialparameters(backend::Backend, ::Type{T}, model::Model; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng())
-initialparameters(::Type{T}, model::Model; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng())
+initialparameters(backend::Backend, ::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
+initialparameters(::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
 ```
 
 The `init!` function must have the following signature:
