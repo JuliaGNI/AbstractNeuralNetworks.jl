@@ -1,5 +1,18 @@
+"""
+    Chain
 
+A chain is a sequence of layers.
 
+A `Chain` can be initialized by passing an arbitrary number of layers
+```
+Chain(layers...)
+```
+or a neural network architecture together with a backend and a parameter type:
+```
+Chain(::Architecture, ::Backend, ::Type; kwargs...)
+```
+The keyword arguments will be passed to the `initialparameters` method of each layer.
+"""
 struct Chain{LT <: Tuple} <: Model
     layers::LT
 
