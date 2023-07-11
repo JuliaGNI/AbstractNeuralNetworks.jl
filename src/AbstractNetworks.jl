@@ -11,6 +11,8 @@ module AbstractNetworks
 
     include("activation.jl")
 
+    include("architecture.jl")
+
 
     export OneInitializer, ZeroInitializer
 
