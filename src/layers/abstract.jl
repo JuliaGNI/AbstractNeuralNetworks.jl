@@ -13,7 +13,7 @@ and the functors
 - `layer(y, x, ps)`
 
 """
-abstract type AbstractLayer end
+abstract type AbstractLayer{N,M} <: Model end
 
 
 """
@@ -30,13 +30,9 @@ end
 
 Simply calls `layer(y, x, ps)`
 """
-function apply!(::AbstractVector, layer::AbstractLayer, x, ps)
+function apply!(y::AbstractArray, layer::AbstractLayer, x, ps)
     return layer(y, x, ps)
 end
-
-
-initialparameters(::AbstractRNG, layer::AbstractLayer, ::Callable) = error("initialparameters not implemented for layer type ", typeof(layer))
-initialparameters(layer::AbstractLayer, init::Callable = default_initializer()) = initialparameters(Random.default_rng(), layer, init)
 
 
 """
@@ -45,4 +41,4 @@ initialparameters(layer::AbstractLayer, init::Callable = default_initializer()) 
 Abstract supertype for explicit layers.
 This type exists mainly for compatibility with Lux.
 """
-abstract type AbstractExplicitLayer <: AbstractLayer end
+abstract type AbstractExplicitLayer{N,M} <: AbstractLayer{N,M} end
