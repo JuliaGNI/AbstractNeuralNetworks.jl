@@ -5,7 +5,7 @@ using Test
 
 
 l = Linear(2, 2)
-p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
+p = initialparameters(Float64, l; init = OneInitializer(), rng = Random.default_rng())
 
 i = ones(2)
 o1 = zero(i)
@@ -15,6 +15,6 @@ o2 = zero(i)
 
 
 d = Dense(2, 2, x -> x)
-p = initialparameters(Random.default_rng(), Float64, d)
+p = initialparameters(Float64, d)
 
 @test l(i, p) == d(i, p)
