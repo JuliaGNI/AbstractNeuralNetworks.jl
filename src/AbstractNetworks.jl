@@ -6,8 +6,8 @@ module AbstractNetworks
     using Random
 
 
-    include("add.jl")
-    include("zero_vector.jl")
+    include("utils/add.jl")
+    include("utils/zero_vector.jl")
 
     include("activation.jl")
 
