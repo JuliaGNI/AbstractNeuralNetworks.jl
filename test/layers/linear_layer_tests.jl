@@ -4,10 +4,8 @@ using Random
 using Test
 
 
-_ones!(_, x) = x .= 1
-
 l = Linear(2, 2)
-p = initialparameters(Random.default_rng(), Float64, l; init=_ones!)
+p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
 
 i = ones(2)
 o1 = zero(i)
