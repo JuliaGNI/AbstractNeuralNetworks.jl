@@ -1,9 +1,9 @@
 @doc raw"""
     AbstractLayer
 
-Abstract supertype for all layers.
+An `AbstractLayer` is a map from $\mathbb{R}^{M} \rightarrow \mathbb{R}^{N}$.
 
-Layer types should implement the following functions:
+Concrete layer types should implement the following functions:
 
 - `initialparameters(layer::AbstractLayer, arrtype::Type, initializer::Callable, rng::AbstractRNG)`
 
