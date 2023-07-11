@@ -6,7 +6,7 @@ module AbstractNetworks
     using Random
 
 
-    include("abstract_initializer.jl")
+    include("initializer.jl")
     include("add.jl")
     include("zero_vector.jl")
 
