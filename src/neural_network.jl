@@ -10,7 +10,7 @@ function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs..
     model = Chain(arch)
 
     # initialize params
-    params = initialparameters(chain, backend, T; kwargs...)
+    params = initialparameters(backend, T, model; kwargs...)
 
     # create neural network
     NeuralNetwork(arch, model, params)
