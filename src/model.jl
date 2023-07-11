@@ -8,29 +8,21 @@ abstract type Model end
     Returns the initial parameters of a model, i.e., a layer or chain.
 
 ```
-initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Model; init::Callable = default_initializer())
-initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; init::Callable = default_initializer())
+initialparameters(backend::Backend, ::Type{T}, model::Model; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng())
+initialparameters(::Type{T}, model::Model; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng())
 ```
 
 The `init!` function must have the following signature:
 ```
 init!(rng::AbstractRNG, x::AbstractArray)
 ```
-The `default_initializer()` returns `randn`.
+The `default_initializer()` returns `randn!`.
 
 """
 function initialparameters end
 
+initialparameters(::Backend, ::Type, model::Model; kwargs...) = error("initialparameters not implemented for model type ", typeof(model))
+initialparameters(::Type{T}, model::Model; kwargs...) where {T} = initialparameters(CPU(), T, model; kwargs...)
 
-_initialparameters_error(model::Model) = error("initialparameters not implemented for model type ", typeof(model))
-
-initialparameters(::AbstractRNG, ::Backend, ::Type, model::Model; kwargs...) = _initialparameters_error(model)
-
-function initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; kwargs...) where {T}
-    initialparameters(rng, CPU(), T, model; kwargs...)
-end
-
-# initialparameters(args...; kwargs...) = initialparameters(Random.default_rng(), args...; kwargs...)
-
-initialparameters(backend::Backend, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(Random.default_rng(), backend, T, model; kwargs...)
-initialparameters(::Type{T}, model::Model; kwargs...) where {T} = initialparameters(Random.default_rng(), T, model; kwargs...)
+initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(backend, T, model; rng = rng, kwargs...)
+initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(T, model; rng = rng, kwargs...)

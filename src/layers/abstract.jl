@@ -5,7 +5,7 @@ An `AbstractLayer` is a map from $\mathbb{R}^{M} \rightarrow \mathbb{R}^{N}$.
 
 Concrete layer types should implement the following functions:
 
-- `initialparameters(layer::AbstractLayer, arrtype::Type, initializer::Callable, rng::AbstractRNG)`
+- `initialparameters(backend::Backend, ::Type{T}, layer::AbstractLayer; init::Callable = default_initializer(), rng::AbstractRNG = Random.default_rng())`
 
 and the functors
 

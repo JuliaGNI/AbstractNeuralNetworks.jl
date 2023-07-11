@@ -27,10 +27,6 @@ Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
 end
 
 
-function initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T}
-    Tuple(initialparameters(rng, backend, T, layer; kwargs...) for layer in model)
-end
-
-function initialparameters(rng::AbstractRNG, x::AbstractArray, model::Chain; kwargs...)
-    Tuple(initialparameters(rng, x, layer; kwargs...) for layer in model)
+function initialparameters(backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T}
+    Tuple(initialparameters(backend, T, layer; kwargs...) for layer in model)
 end
