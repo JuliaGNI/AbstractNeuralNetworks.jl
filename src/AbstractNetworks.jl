@@ -6,11 +6,15 @@ module AbstractNetworks
     using Random
 
 
-    include("initializer.jl")
     include("add.jl")
     include("zero_vector.jl")
 
     include("activation.jl")
+
+
+    export OneInitializer, ZeroInitializer
+
+    include("initializer.jl")
 
 
     export initialparameters
