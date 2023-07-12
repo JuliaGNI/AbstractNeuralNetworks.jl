@@ -7,4 +7,4 @@
 [![PkgEval](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/A/AbstractNetworks.svg)](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/A/AbstractNetworks.html)
 
 This package implements abstract and general data structures for the construction of neural networks, e.g., layers, chains, and architectures.
-It mainly serves as a common base package for [GeometricMachineLearning.jl](https://github.com/JuliaGNI/GeometricMachineLearning.jl) and [SymbolicNetworks](https://github.com/JuliaGNI/SymbolicNetworks.jl).
+It mainly serves as a common base package for [GeometricMachineLearning.jl](https://github.com/JuliaGNI/GeometricMachineLearning.jl) and [SymbolicNetworks.jl](https://github.com/JuliaGNI/SymbolicNetworks.jl).
