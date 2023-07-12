@@ -5,6 +5,9 @@ module AbstractNetworks
     using Random
 
 
+    export CPU, GPU
+    
+
     include("utils/add.jl")
     include("utils/zero_vector.jl")
 

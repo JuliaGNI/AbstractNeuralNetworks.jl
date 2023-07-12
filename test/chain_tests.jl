@@ -1,5 +1,4 @@
 using AbstractNetworks
-using KernelAbstractions
 using Random
 using Test
 
