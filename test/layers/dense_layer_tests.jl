@@ -12,14 +12,14 @@ l = Dense(2, 2, x -> x)
 p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
 
 @test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 3 .* i
-@test usebias(l) == true
+@test AbstractNetworks.usebias(l) == true
 
 
 l = Dense(2, 2, x -> x; use_bias = false)
 p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
 
 @test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 2 .* i
-@test usebias(l) == false
+@test AbstractNetworks.usebias(l) == false
 
 
 p1 = initialparameters(Float64, l; init = OneInitializer())
