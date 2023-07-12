@@ -39,7 +39,12 @@ Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
     return Expr(:block, calls...)
 end
 
-
 function initialparameters(backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T}
     Tuple(initialparameters(backend, T, layer; kwargs...) for layer in model)
+end
+
+function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)
+    for (layer, θ, dθ) in zip(chain, params, grad)
+        update!(layer, θ, dθ, η)
+    end
 end

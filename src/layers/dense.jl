@@ -31,3 +31,9 @@ function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N}; init:
     init(rng, b)
     (W = W, b = b)
 end
+
+function update!(::Dense, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)
+    for obj in keys(θ)
+        θ[obj] .+= η * dθ[obj]
+    end
+end

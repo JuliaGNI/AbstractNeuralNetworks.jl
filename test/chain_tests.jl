@@ -26,6 +26,10 @@ p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 3 .* i
 
+AbstractNetworks.update!(c, p, p, 1.0)
+
+@test c(i, p) == 6 .* i
+
 
 c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
@@ -33,6 +37,10 @@ c = Chain(Dense(2, 2, x -> x),
 p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 7 .* i
+
+AbstractNetworks.update!(c, p, p, 1.0)
+
+@test c(i, p) == 26 .* i
 
 
 c = Chain(Linear(2, 2),
@@ -42,3 +50,7 @@ c = Chain(Linear(2, 2),
 p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 15 .* i
+
+AbstractNetworks.update!(c, p, p, 1.0)
+
+@test c(i, p) == 106 .* i
