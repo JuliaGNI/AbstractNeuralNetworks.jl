@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = AbstractNetworks
+CurrentModule = AbstractNeuralNetworks
 ```
 
-# AbstractNetworks
+# AbstractNeuralNetworks
 
-Documentation for [AbstractNetworks](https://github.com/JuliaGNI/AbstractNetworks.jl).
+Documentation for [AbstractNeuralNetworks](https://github.com/JuliaGNI/AbstractNeuralNetworks.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [AbstractNetworks]
+Modules = [AbstractNeuralNetworks]
 ```
