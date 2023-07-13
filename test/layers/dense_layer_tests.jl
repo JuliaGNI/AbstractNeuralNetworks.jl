@@ -1,4 +1,4 @@
-using AbstractNetworks
+using AbstractNeuralNetworks
 using Random
 using Test
 
@@ -11,19 +11,19 @@ o2 = zero(i)
 l = Dense(2, 2, x -> x)
 p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
 
-@test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 3 .* i
-@test AbstractNetworks.usebias(l) == true
+@test l(i, p) == l(o1, i, p) == AbstractNeuralNetworks.apply!(o2, l, i, p) == 3 .* i
+@test AbstractNeuralNetworks.usebias(l) == true
 
-AbstractNetworks.update!(l, p, p, 1.0)
+AbstractNeuralNetworks.update!(l, p, p, 1.0)
 
-@test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 6 .* i
+@test l(i, p) == l(o1, i, p) == AbstractNeuralNetworks.apply!(o2, l, i, p) == 6 .* i
 
 
 l = Dense(2, 2, x -> x; use_bias = false)
 p = initialparameters(Random.default_rng(), Float64, l; init = OneInitializer())
 
-@test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 2 .* i
-@test AbstractNetworks.usebias(l) == false
+@test l(i, p) == l(o1, i, p) == AbstractNeuralNetworks.apply!(o2, l, i, p) == 2 .* i
+@test AbstractNeuralNetworks.usebias(l) == false
 
 
 p1 = initialparameters(Float64, l; init = OneInitializer())

@@ -1,4 +1,4 @@
-using AbstractNetworks
+using AbstractNeuralNetworks
 using Random
 using Test
 
@@ -10,7 +10,7 @@ i = ones(2)
 o1 = zero(i)
 o2 = zero(i)
 
-@test l(i, p) == l(o1, i, p) == AbstractNetworks.apply!(o2, l, i, p) == 3 .* i
+@test l(i, p) == l(o1, i, p) == AbstractNeuralNetworks.apply!(o2, l, i, p) == 3 .* i
 
 
 d = Dense(2, 2, x -> x)

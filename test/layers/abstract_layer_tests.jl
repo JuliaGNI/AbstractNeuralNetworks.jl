@@ -1,1 +1,1 @@
-using AbstractNetworks
+using AbstractNeuralNetworks

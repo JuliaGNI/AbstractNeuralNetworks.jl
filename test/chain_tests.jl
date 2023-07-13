@@ -1,4 +1,4 @@
-using AbstractNetworks
+using AbstractNeuralNetworks
 using Random
 using Test
 
@@ -26,7 +26,7 @@ p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 3 .* i
 
-AbstractNetworks.update!(c, p, p, 1.0)
+AbstractNeuralNetworks.update!(c, p, p, 1.0)
 
 @test c(i, p) == 6 .* i
 
@@ -38,7 +38,7 @@ p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 7 .* i
 
-AbstractNetworks.update!(c, p, p, 1.0)
+AbstractNeuralNetworks.update!(c, p, p, 1.0)
 
 @test c(i, p) == 26 .* i
 
@@ -51,6 +51,6 @@ p = initialparameters(Float64, c; init = OneInitializer())
 
 @test c(i, p) == 15 .* i
 
-AbstractNetworks.update!(c, p, p, 1.0)
+AbstractNeuralNetworks.update!(c, p, p, 1.0)
 
 @test c(i, p) == 106 .* i

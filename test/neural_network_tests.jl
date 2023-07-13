@@ -1,4 +1,4 @@
-using AbstractNetworks
+using AbstractNeuralNetworks
 using Random
 using Test
 
