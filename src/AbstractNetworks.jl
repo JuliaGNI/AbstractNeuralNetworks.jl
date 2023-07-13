@@ -1,4 +1,4 @@
-module AbstractNetworks
+module AbstractNeuralNetworks
 
     using KernelAbstractions
     using LinearAlgebra
