@@ -5,12 +5,12 @@ struct Dense{M, N, BIAS, ST} <: AbstractExplicitLayer{M, N}
     Dense(m, n, σ; use_bias = true) = new{m, n, use_bias, typeof(σ)}(σ)
 end
 
-function (layer::Dense)(x::AbstractArray, ps::NamedTuple)
-    if usebias(layer)
-        layer.σ.(ps.W * x .+ ps.b)
-    else
-        layer.σ.(ps.W * x)
-    end
+function (layer::Dense{M,N,true})(x::AbstractArray, ps::NamedTuple) where {M,N}
+    layer.σ.(ps.W * x .+ ps.b)
+end
+
+function (layer::Dense{M,N,false})(x::AbstractArray, ps::NamedTuple) where {M,N}
+    layer.σ.(ps.W * x)
 end
 
 function (layer::Dense)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
