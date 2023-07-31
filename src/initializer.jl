@@ -9,7 +9,7 @@ function (::ZeroInitializer)(_, x)
 end
 
 struct OneInitializer <: AbstractInitializer end
-function (::OneInitializer)(_, x::AbstractArray{T})
+function (::OneInitializer)(_, x::AbstractArray{T}) where T 
     backend = get_backend(x)
     x .= KernelAbstractions.ones(backend, T, size(x))
 end
