@@ -4,9 +4,21 @@ abstract type AbstractInitializer end
 const Initializer = Union{AbstractInitializer, Base.Callable}
 
 struct ZeroInitializer <: AbstractInitializer end
-(::ZeroInitializer)(_, x) = x .= 0
+function (::ZeroInitializer)(_, x) 
+    x .= KernelAbstractions.zero(x)
+end
 
 struct OneInitializer <: AbstractInitializer end
-(::OneInitializer)(_, x) = x .= 1
+function (::OneInitializer)(_, x::AbstractArray{T})
+    backend = get_backend(x)
+    x .= KernelAbstractions.ones(backend, T, size(x))
+end
 
 default_initializer() = randn!
+
+struct GlorotUniform <: AbstractNeuralNetworks.AbstractInitializer end
+
+function (::GlorotUniform)(rng, x::AbstractVecOrMat{T}) where T
+    rand!(rng, x)
+    x .= sqrt(T(24.0) / sum(size(x))) * (x .- T(0.5)) 
+end
