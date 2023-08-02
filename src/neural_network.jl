@@ -1,7 +1,7 @@
-abstract type AbstractNeuralNetwork end
+abstract type AbstractNeuralNetwork{AT} end
 
 
-struct NeuralNetwork{AT,MT,PT}
+struct NeuralNetwork{AT,MT,PT} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
