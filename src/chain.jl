@@ -54,7 +54,7 @@ end
 function parameterlength(chain::Chain)
     number_parameters = 0
     for layer in chain.layers
-        number_parameters += parameterlength(chain)
+        number_parameters += parameterlength(layer)
     end
     number_parameters
 end
