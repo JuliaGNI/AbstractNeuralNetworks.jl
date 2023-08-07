@@ -50,3 +50,11 @@ function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)
         update!(layer, θ, dθ, η)
     end
 end
+
+function parameterlength(chain::Chain)
+    number_parameters = 0
+    for layer in chain.layers
+        number_parameters += parameterlength(chain)
+    end
+    number_parameters
+end
