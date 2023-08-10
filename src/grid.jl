@@ -19,9 +19,9 @@ Base.iterate(g::GridCell, i=1) = i > length(g) ? nothing : (cell(g, i), i+1)
 
 @generated function applygrid(gridcell::GridCell{M,N}, x::AbstractArray, st::AbstractArray, ps::Tuple) where {M,N}
     x_symbols = vcat(reshape([:(x[$i]) for i in 1:N], (1,N)), [gensym() for _ in 1:M, _ in 1:N])
-    st_symbols = hcat([:(st[$i]) for i in 1:N], [gensym() for _ in 1:N, _ in 1:M])
-    calls = vcat([:(($(x_symbols[j+1, i]), $(st[j, i+1]))  = cell(gridcell, $j, $i)($(x_symbols[j,i]), $(st_symbols[j, i]), ps[$j][$i])) for j in 1:M, i in 1:N]...)
-    push!(calls, :(return $(x_symbols[M+1, N])))
+    st_symbols = hcat([:(st[$i]) for i in 1:M], [gensym() for _ in 1:M, _ in 1:N])
+    calls = vcat([:(($(x_symbols[j+1,i]), $(st_symbols[j,i+1])) = AbstractNeuralNetworks.cell(gridcell, $j, $i)($(x_symbols[j,i]), $(st_symbols[j,i]), ps[$j][$i])) for j in 1:M, i in 1:N]...)
+    push!(calls, :(return $(x_symbols[M+1,N])))
     return Expr(:block, calls...)
 end 
 #
@@ -35,3 +35,5 @@ function update!(grid::GridCell, params::Tuple, grad::Tuple, η::AbstractFloat)
         update!(cell, θ, dθ, η)
     end
 end
+
+
