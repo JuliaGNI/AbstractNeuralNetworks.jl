@@ -24,8 +24,7 @@ Base.iterate(g::GridCell, i=1) = i > length(g) ? nothing : (cell(g, i), i+1)
     push!(calls, :(return $(x_symbols[M+1,N])))
     return Expr(:block, calls...)
 end 
-#
-#
+
 function initialparameters(backend::Backend, ::Type{T}, model::GridCell; kwargs...) where {T}
     Tuple(initialparameters(backend, T, cell; kwargs...) for cell in model)
 end
