@@ -32,10 +32,18 @@ module AbstractNeuralNetworks
     include("layers/dense.jl")
     include("layers/linear.jl")
 
-
     export Chain
 
     include("chain.jl")
+
+    export Recurrent
+
+    include("cells/abstract.jl")
+    include("cells/recurrent.jl")
+
+    export GridCell
+
+    include("grid.jl")
 
     export AbstractNeuralNetwork
     export NeuralNetwork
