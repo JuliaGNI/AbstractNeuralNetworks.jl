@@ -43,3 +43,6 @@ Abstract supertype for explicit cells.
 This type exists mainly for compatibility with Lux.
 """
 abstract type AbstractExplicitCell{M,N,O,P} <: AbstractCell{M,N,O,P} end
+
+
+Base.size(::AbstractCell{M,N,O,P}) where {M,N,O,P} = (M,N,O,P)

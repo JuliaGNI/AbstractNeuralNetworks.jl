@@ -18,11 +18,6 @@ function (cell::Recurrent{M, N, O, P, false})(x::AbstractArray, st::AbstractArra
     return (y, s)
 end
 
-function (cell::Recurrent{M, N, O, P, false})(x::AbstractArray, st::AbstractArray, ps::NamedTuple) where {M,N,O,P}
-    s = cell.σₛ.(ps.Wₛₛ * st + ps.Wₛₓ * x)
-    y = cell.σₒ.(ps.Wₒₛ * s)
-    return (y, s)
-end
 
 usebias(::Recurrent{M, N, O, P, BIAS}) where {M, N, O, P, BIAS} = BIAS
 

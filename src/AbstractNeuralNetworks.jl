@@ -4,10 +4,8 @@ module AbstractNeuralNetworks
     using LinearAlgebra
     using Random
 
-
     export CPU, GPU
     
-
     include("utils/add.jl")
     include("utils/zero_vector.jl")
 
@@ -36,10 +34,13 @@ module AbstractNeuralNetworks
 
     include("chain.jl")
 
-    export Recurrent
+    export Recurrent, LSTM, IdentityCell, GRU
 
     include("cells/abstract.jl")
     include("cells/recurrent.jl")
+    include("cells/lstm.jl")
+    include("cells/identity.jl")
+    include("cells/gru.jl")
 
     export GridCell
 
