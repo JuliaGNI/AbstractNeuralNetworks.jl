@@ -1,9 +1,15 @@
+abstract type AbstractNeuralNetwork{AT} end
 
-struct NeuralNetwork{AT,MT,PT}
+
+struct NeuralNetwork{AT,MT,PT} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
 end
+
+architecture(nn::NeuralNetwork) = nn.architecture
+model(nn::NeuralNetwork) = nn.model
+params(nn::NeuralNetwork) = nn.params
 
 function NeuralNetwork(arch::Architecture, model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T}
     # initialize params
