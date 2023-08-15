@@ -16,7 +16,7 @@ module AbstractNeuralNetworks
     include("architecture.jl")
 
 
-    export OneInitializer, ZeroInitializer
+    export OneInitializer, ZeroInitializer, GlorotUniform
 
     include("initializer.jl")
 

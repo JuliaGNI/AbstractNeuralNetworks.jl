@@ -37,3 +37,7 @@ function update!(::Dense, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)
         θ[obj] .+= η * dθ[obj]
     end
 end
+
+function parameterlength(::Dense{M, N, BIAS}) where {M, N, BIAS}
+    BIAS == true ? (M*N + N) : (M*N)
+end
