@@ -1,9 +1,11 @@
 
-struct GridCell{M, N, CT <: AbstractMatrix} <: Model
+struct GridCell{M, N, CT <: AbstractMatrix, IT <: AbstractArray} <: Model
     cells::CT
-    function GridCell(cells)
+    init_st::IT
+    function GridCell(cells; init_state = missing)
         m,n = size(cells)
-        new{m, n, typeof(cells)}(cells)
+        init_st = ismissing(init_state) ? [zeros(size(cells[i,1])[2]) for i in 1:m] : init_state
+        new{m, n, typeof(cells), typeof(init_st)}(cells, init_st)
     end
 end
 
@@ -13,9 +15,13 @@ end
 @inline cell(g::GridCell, i, j) = g.cells[i, j]
 @inline cell(g::GridCell, i) = g.cells[i]
 
+@inline lines(::GridCell{M, N}) where {M,N} = M
+@inline rows(::GridCell{M, N}) where {M,N} = N
+
 Base.length(g::GridCell) = length(g.cells)
 Base.size(g::GridCell) = size(g.cells)
 Base.iterate(g::GridCell, i=1) = i > length(g) ? nothing : (cell(g, i), i+1)
+Base.eachindex(g::GridCell) = Iterators.product(1:lines(g), 1:rows(g))
 
 @generated function applygrid(gridcell::GridCell{M,N}, x::AbstractArray, st::AbstractArray, ps::Tuple) where {M,N}
     x_symbols = vcat(reshape([:(x[$i]) for i in 1:N], (1,N)), [gensym() for _ in 1:M, _ in 1:N])
@@ -25,8 +31,9 @@ Base.iterate(g::GridCell, i=1) = i > length(g) ? nothing : (cell(g, i), i+1)
     return Expr(:block, calls...)
 end 
 
-function initialparameters(backend::Backend, ::Type{T}, model::GridCell; kwargs...) where {T}
-    Tuple(initialparameters(backend, T, cell; kwargs...) for cell in model)
+function initialparameters(backend::Backend, ::Type{T}, gridcell::GridCell; kwargs...) where {T}
+    M,N = size(gridcell)
+    Tuple([Tuple([initialparameters(Random.default_rng(), Float64, cell(gridcell, i, j)) for j in 1:N]) for i in 1:M])
 end
 
 function update!(grid::GridCell, params::Tuple, grad::Tuple, η::AbstractFloat)

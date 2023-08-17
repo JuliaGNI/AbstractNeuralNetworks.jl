@@ -19,6 +19,7 @@ p4 = initialparameters(Random.default_rng(), Float64, c4)
 p5 = initialparameters(Random.default_rng(), Float64, c5)
 p6 = initialparameters(Random.default_rng(), Float64, c6)
 
+
 params = ((p1, p2),(p3, p4), (p5, p6))
 
 g = GridCell( [c1  c2;

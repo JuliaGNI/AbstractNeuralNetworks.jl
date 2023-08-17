@@ -23,7 +23,7 @@ function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs..
     NeuralNetwork(arch, Chain(arch), backend, T; kwargs...)
 end
 
-function NeuralNetwork(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) where {T}
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
@@ -35,4 +35,10 @@ end
 (nn::NeuralNetwork)(x, params) = nn.model(x, params)
 (nn::NeuralNetwork)(x) = nn(x, nn.params)
 
+(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x, st, params) = nn.model(x, st, params)
+(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x, params) = nn(x, nn.model.init_st, params)
+(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x) = nn(x, nn.model.init_st, nn.params)
+
 apply(nn::NeuralNetwork, x, args...) = nn(x, args...)
+
+

@@ -31,6 +31,7 @@ end
 
 Base.length(c::Chain) = length(c.layers)
 Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
+Base.eachindex(c::Chain) = 1:length(c)
 
 
 @generated function applychain(layers::Tuple, x::AbstractArray, ps::Tuple)
