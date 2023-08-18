@@ -26,3 +26,5 @@ initialparameters(::Type{T}, model::Model; kwargs...) where {T} = initialparamet
 
 initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(backend, T, model; rng = rng, kwargs...)
 initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(T, model; rng = rng, kwargs...)
+
+function parameterlength end
