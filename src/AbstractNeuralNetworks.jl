@@ -22,6 +22,7 @@ module AbstractNeuralNetworks
 
 
     export initialparameters
+    export parameterlength
 
     include("model.jl")
 
