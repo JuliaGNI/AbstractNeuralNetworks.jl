@@ -14,8 +14,8 @@ function (cell::LSTM{M, N, O, P})(x::AbstractArray, st::AbstractArray, ps::Named
     f = cell.σ₀.(ps.Wfₓ * x + ps.Wfₕ * h + ps.bf)
     i = cell.σ₀.(ps.Wᵢₓ * x + ps.Wᵢₕ * h + ps.bᵢ)
     o = cell.σ₀.(ps.Wₒₓ * x + ps.Wₒₕ * h + ps.bₒ)
-    nc = @. f * c + i * cell.σ₋₁(h)
-    nh = @. o * cell.σ₋₁(nc)
+    nc = h #@. f * c + i * cell.σ₋₁(h)
+    nh = h #@. o * cell.σ₋₁(nc)
     return (nh, [nh..., nc...])
 end
 
