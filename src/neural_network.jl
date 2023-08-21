@@ -31,6 +31,9 @@ function NeuralNetwork(nn::Union{Architecture, Chain, GridCell}, ::Type{T}; kwar
     NeuralNetwork(nn, CPU(), T; kwargs...)
 end
 
+function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) where {T}
+    NeuralNetwork(arch, model, CPU(), T; kwargs...)
+end
 
 (nn::NeuralNetwork)(x, params) = nn.model(x, params)
 (nn::NeuralNetwork)(x) = nn(x, nn.params)
