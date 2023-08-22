@@ -27,6 +27,8 @@ g = GridCell( [c1  c2;
                c3  c4;
                c5  c6])
 
+@test Tuple([e for e in eachindex(g)]) == ((1,1),(2,1), (3,1), (1,2), (2,2), (3,2))
+
 rng = Random.seed!(1234)
 @test params == initialparameters(rng, Float64, g)
 
