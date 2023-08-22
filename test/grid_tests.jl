@@ -2,6 +2,8 @@ using AbstractNeuralNetworks
 using Random
 using Test
 
+import AbstractNeuralNetworks: update!
+
 rng = Random.seed!(1234)
 
 input = [[2,2],[2]]
@@ -27,6 +29,8 @@ g = GridCell( [c1  c2;
                c3  c4;
                c5  c6])
 
+@test length(g) == 6
+@test_nowarn for c in g end
 @test Tuple([e for e in eachindex(g)]) == ((1,1),(2,1), (3,1), (1,2), (2,2), (3,2))
 
 rng = Random.seed!(1234)
@@ -39,4 +43,13 @@ rng = Random.seed!(1234)
 @test AbstractNeuralNetworks.cell(g, 3, 1) == c5
 @test AbstractNeuralNetworks.cell(g, 3, 2) == c6
 
+@test AbstractNeuralNetworks.cell(g, 1) == c1
+@test AbstractNeuralNetworks.cell(g, 2) == c3
+@test AbstractNeuralNetworks.cell(g, 3) == c5
+@test AbstractNeuralNetworks.cell(g, 4) == c2
+@test AbstractNeuralNetworks.cell(g, 5) == c4
+@test AbstractNeuralNetworks.cell(g, 6) == c6
+
 @test_nowarn g(input, st, params)
+
+@test_nowarn update!(g, params, params, 0.4)

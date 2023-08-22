@@ -36,7 +36,7 @@ function initialparameters(backend::Backend, ::Type{T}, gridcell::GridCell; kwar
     [initialparameters(backend, T, cell(gridcell, i, j); kwargs...) for i in 1:M, j in 1:N]
 end
 
-function update!(grid::GridCell, params::Tuple, grad::Tuple, η::AbstractFloat)
+function update!(grid::GridCell, params::Matrix, grad::Matrix, η::AbstractFloat)
     for (cell, θ, dθ) in zip(grid, params, grad)
         update!(cell, θ, dθ, η)
     end
