@@ -2,6 +2,8 @@ using AbstractNeuralNetworks
 using Random
 using Test
 
+import AbstractNeuralNetworks: params, model
+
 # NeuralNetwork with Chain
 
 c = Chain(Dense(2, 2, x -> x),
