@@ -28,4 +28,4 @@ initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Model; k
 initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(T, model; rng = rng, kwargs...)
 
 
-Base.eachindex(m::Model) = @error "Ypu forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"
+Base.eachindex(m::Model) = @error "You forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"

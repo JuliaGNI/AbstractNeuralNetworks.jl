@@ -27,7 +27,7 @@ function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) whe
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
-function NeuralNetwork(nn::Union{Architecture,Chain}, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(nn::Union{Architecture, Chain, GridCell}, ::Type{T}; kwargs...) where {T}
     NeuralNetwork(nn, CPU(), T; kwargs...)
 end
 

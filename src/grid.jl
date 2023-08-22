@@ -33,7 +33,7 @@ end
 
 function initialparameters(backend::Backend, ::Type{T}, gridcell::GridCell; kwargs...) where {T}
     M,N = size(gridcell)
-    [initialparameters(Random.default_rng(), Float64, cell(gridcell, i, j)) for i in 1:M, j in 1:N]
+    [initialparameters(backend, T, cell(gridcell, i, j); kwargs...) for i in 1:M, j in 1:N]
 end
 
 function update!(grid::GridCell, params::Tuple, grad::Tuple, η::AbstractFloat)
