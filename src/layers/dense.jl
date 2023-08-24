@@ -32,6 +32,20 @@ function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N}; init:
     (W = W, b = b)
 end
 
+function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N,true}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,T}
+    W = KernelAbstractions.zeros(backend, T, N, M)
+    b = KernelAbstractions.zeros(backend, T, N)
+    init(rng, W)
+    init(rng, b)
+    (W = W, b = b)
+end
+
+function initialparameters(backend::Backend, ::Type{T}, layer::Dense{M,N,false}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,T}
+    W = KernelAbstractions.zeros(backend, T, N, M)
+    init(rng, W)
+    (W = W,)
+end
+
 function update!(::Dense, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)
     for obj in keys(θ)
         θ[obj] .+= η * dθ[obj]
