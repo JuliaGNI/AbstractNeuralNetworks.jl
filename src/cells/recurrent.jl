@@ -18,11 +18,19 @@ function (cell::Recurrent{M, N, O, P, false})(x::AbstractArray, st::AbstractArra
     return (y, s)
 end
 
+function (cell::Recurrent{M, N, 0, P, true})(x::AbstractArray, st::AbstractArray, ps::NamedTuple) where {M,N,P}
+    s = cell.σₛ.(ps.Wₛₛ * st + ps.Wₛₓ * x + ps.bₛ)
+    return (nothing, s)
+end
+
+function (cell::Recurrent{M, N, 0, P, false})(x::AbstractArray, st::AbstractArray, ps::NamedTuple) where {M,N,P}
+    s = cell.σₛ.(ps.Wₛₛ * st + ps.Wₛₓ * x)
+    return (nothing, s)
+end
 
 usebias(::Recurrent{M, N, O, P, BIAS}) where {M, N, O, P, BIAS} = BIAS
 
-
-function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, O, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O, P, T}
+function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, O, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
     Wₛₛ = KernelAbstractions.zeros(backend, T, P, N)
     Wₛₓ = KernelAbstractions.zeros(backend, T, P, M)
     Wₒₛ = KernelAbstractions.zeros(backend, T, O, P)
@@ -35,6 +43,17 @@ function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, O,
     init(rng, bₒ)
     (Wₛₛ = Wₛₛ, Wₛₓ = Wₛₓ, Wₒₛ = Wₒₛ, bₛ = bₛ, bₒ = bₒ)
 end
+
+function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, 0, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,P,T}
+    Wₛₛ = KernelAbstractions.zeros(backend, T, P, N)
+    Wₛₓ = KernelAbstractions.zeros(backend, T, P, M)
+    bₛ = KernelAbstractions.zeros(backend, T, P)
+    init(rng, Wₛₛ)
+    init(rng, Wₛₓ)
+    init(rng, bₛ)
+    (Wₛₛ = Wₛₛ, Wₛₓ = Wₛₓ, bₛ = bₛ)
+end
+
 
 function update!(::Recurrent, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)
     for obj in keys(θ)

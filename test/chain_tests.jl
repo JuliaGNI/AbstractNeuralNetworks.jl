@@ -10,6 +10,8 @@ c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
 
+@test eachindex(c) == 1:3
+
 p1 = initialparameters(Random.default_rng(), Float64, c; init = OneInitializer())
 p2 = initialparameters(Random.default_rng(), CPU(), Float64, c; init = OneInitializer())
 p3 = initialparameters(Float64, c; init = OneInitializer())
