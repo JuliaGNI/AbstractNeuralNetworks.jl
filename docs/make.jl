@@ -20,6 +20,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JuliaGNI/AbstractNeuralNetworks.jl",
-    devbranch="main",
+    repo   = "github.com/JuliaGNI/AbstractNeuralNetworks.jl",
+    devurl = "latest",
+    devbranch = "main",
 )
