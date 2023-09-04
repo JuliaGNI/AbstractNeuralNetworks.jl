@@ -59,3 +59,5 @@ function parameterlength(chain::Chain)
     end
     number_parameters
 end
+
+Chain(model::Chain, d::AbstractExplicitLayer) = Chain(model.layers..., d)
