@@ -11,7 +11,7 @@ architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T<:Number}
     # initialize params
     params = initialparameters(backend, T, model; kwargs...)
 
