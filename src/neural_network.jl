@@ -44,4 +44,4 @@ end
 
 apply(nn::NeuralNetwork, x, args...) = nn(x, args...)
 
-
+parameterlength(nn::NeuralNetwork) = parameterlength(nn.model)
