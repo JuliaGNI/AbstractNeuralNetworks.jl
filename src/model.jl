@@ -1,4 +1,6 @@
-
+"""
+A supertype for `Chain`, `AbstractCell` etc.
+"""
 abstract type Model end
 
 

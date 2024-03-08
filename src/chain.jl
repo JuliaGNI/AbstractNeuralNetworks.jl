@@ -42,9 +42,32 @@ Base.eachindex(c::Chain) = 1:length(c)
     return Expr(:block, calls...)
 end
 
-function initialparameters(backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T}
+function initialparameters(backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T <: Number}
     Tuple(initialparameters(backend, T, layer; kwargs...) for layer in model)
 end
+
+initialparameters(::Type{T}, model::Chain, backend::Backend; kwargs...) where {T <: Number} = initialparameters(backend, T, model; kwargs...)
+
+initialparameters(::Type{T}, backend::Backend, model::Chain; kwargs...) where {T <: Number} = initialparameters(backend, T, model; kwargs...)
+
+initialparameters(backend::Backend, model::Chain, ::Type{T}; kwargs...) where {T <: Number} = initialparameters(backend, T, model; kwargs...)
+
+initialparameters(model::Chain, ::Type{T}, backend::Backend; kwargs...) where {T <: Number} = initialparameters(backend, T, model; kwargs...)
+
+initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T <: Number} = initialparameters(backend, T, model; kwargs...)
+
+initialparameters(::Type{T}, model::Chain; kwargs...) where {T <: Number} = initialparameters(CPU(), T, model; kwargs...)
+
+initialparameters(model::Chain, ::Type{T}; kwargs...) where {T <: Number} = initialparameters(CPU(), T, model; kwargs...)
+
+initialparameters(backend::Backend, model::Chain; kwargs...) = initialparameters(backend, Float32, model; kwargs...)
+
+initialparameters(backend::CPU, model::Chain; kwargs...) = initialparameters(backend, Float64, model; kwargs...)
+
+initialparameters(model::Chain, backend; kwargs...) = initialparameters(backend, model; kwargs...)
+
+initialparameters(model::Chain; kwargs...) = initialparameters(CPU(), model; kwargs...)
+
 
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)
     for (layer, θ, dθ) in zip(chain, params, grad)
