@@ -2,7 +2,7 @@
 struct Dense{M, N, BIAS, ST} <: AbstractExplicitLayer{M, N}
     σ::ST
 
-    Dense(m, n, σ; use_bias = true) = new{m, n, use_bias, typeof(σ)}(σ)
+    Dense(m, n, σ = tanh; use_bias = true) = new{m, n, use_bias, typeof(σ)}(σ)
 end
 
 function (layer::Dense{M,N,true})(x::AbstractArray, ps::NamedTuple) where {M,N}
