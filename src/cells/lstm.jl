@@ -20,7 +20,7 @@ function (cell::LSTM{M, N, O, P})(x::AbstractArray, st::AbstractArray, ps::Named
 end
 
 
-function initialparameters(backend::Backend, ::Type{T}, cell::LSTM{M, N, O, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
+function initialparameters(cell::LSTM{M, N, O, P}, backend::Backend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
     Wfₓ = KernelAbstractions.zeros(backend, T, O, M)
     Wfₕ = KernelAbstractions.zeros(backend, T, O, O)
     Wᵢₓ = KernelAbstractions.zeros(backend, T, O, M)

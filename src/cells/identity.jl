@@ -7,7 +7,7 @@ function (cell::IdentityCell{M, N, O, P})(x::AbstractArray, st::AbstractArray, p
     return (x, st)
 end
 
-function initialparameters(backend::Backend, ::Type{T}, cell::IdentityCell{M, N, O, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O, P, T}
+function initialparameters(cell::IdentityCell{M, N, O, P}, backend::Backend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O, P, T}
     NamedTuple()
 end
 

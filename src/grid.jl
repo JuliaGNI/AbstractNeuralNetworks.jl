@@ -31,9 +31,9 @@ Base.eachindex(g::GridCell) = Iterators.product(1:lines(g), 1:rows(g))
     return Expr(:block, calls...)
 end 
 
-function initialparameters(backend::Backend, ::Type{T}, gridcell::GridCell; kwargs...) where {T}
-    M,N = size(gridcell)
-    [initialparameters(backend, T, cell(gridcell, i, j); kwargs...) for i in 1:M, j in 1:N]
+function initialparameters(gridcell::GridCell, backend::Backend, ::Type{T}; kwargs...) where {T}
+    M, N = size(gridcell)
+    [initialparameters(cell(gridcell, i, j), backend, T; kwargs...) for i in 1:M, j in 1:N]
 end
 
 function update!(grid::GridCell, params::Matrix, grad::Matrix, η::AbstractFloat)

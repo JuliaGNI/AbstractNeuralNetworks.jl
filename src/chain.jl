@@ -33,7 +33,6 @@ Base.length(c::Chain) = length(c.layers)
 Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
 Base.eachindex(c::Chain) = 1:length(c)
 
-
 @generated function applychain(layers::Tuple, x::Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}, ps::Tuple) where AT<:AbstractArray
     N = length(fieldtypes((layers)))
     x_symbols = vcat([:x], [gensym() for _ in 1:N])
@@ -42,7 +41,7 @@ Base.eachindex(c::Chain) = 1:length(c)
     return Expr(:block, calls...)
 end
 
-function initialparameters(model, backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T <: Number}
+function initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     Tuple(initialparameters(layer, backend, T; kwargs...) for layer in model)
 end
 

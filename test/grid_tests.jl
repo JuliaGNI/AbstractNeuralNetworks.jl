@@ -16,12 +16,12 @@ c4 = IdentityCell()
 c5 = GRU(2, 8)
 c6 = LSTM(1, 4)
 
-p1 = initialparameters(rng, Float64, c1)
-p3 = initialparameters(rng, Float64, c3)
-p5 = initialparameters(rng, Float64, c5)
-p2 = initialparameters(rng, Float64, c2)
-p4 = initialparameters(rng, Float64, c4)
-p6 = initialparameters(rng, Float64, c6)
+p1 = initialparameters(rng, c1, Float64)
+p3 = initialparameters(rng, c3, Float64)
+p5 = initialparameters(rng, c5, Float64)
+p2 = initialparameters(rng, c2, Float64)
+p4 = initialparameters(rng, c4, Float64)
+p6 = initialparameters(rng, c6, Float64)
 
 params = [p1 p2 ; p3 p4 ; p5 p6]
 
@@ -34,7 +34,7 @@ g = GridCell( [c1  c2;
 @test Tuple([e for e in eachindex(g)]) == ((1,1),(2,1), (3,1), (1,2), (2,2), (3,2))
 
 rng = Random.seed!(1234)
-@test params == initialparameters(rng, Float64, g)
+@test params == initialparameters(rng, g, Float64)
 
 @test AbstractNeuralNetworks.cell(g, 1, 1) == c1
 @test AbstractNeuralNetworks.cell(g, 1, 2) == c2
