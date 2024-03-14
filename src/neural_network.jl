@@ -11,28 +11,40 @@ architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T<:Number}
+function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     # initialize params
-    params = initialparameters(backend, T, model; kwargs...)
+    params = initialparameters(model, backend, T; kwargs...)
 
     # create neural network
     NeuralNetwork(arch, model, params)
 end
 
-function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(arch, Chain(arch), backend, T; kwargs...)
 end
 
-function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
-function NeuralNetwork(nn::Union{Architecture, Chain, GridCell}, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(nn::Union{Architecture, Chain, GridCell}, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(nn, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) where {T}
+function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
+    NeuralNetwork(model, backend, Float32; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}, backend::CPU; kwargs...)
+    NeuralNetwork(model, backend, Float64; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}; kwargs...)
+    NeuralNetwork(model, CPU(); kwargs...)
 end
 
 (nn::NeuralNetwork)(x, params) = nn.model(x, params)

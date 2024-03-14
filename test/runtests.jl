@@ -11,3 +11,5 @@ using SafeTestsets
 @safetestset "GridCell                                                                        " begin include("grid_tests.jl") end
 @safetestset "Architecture                                                                    " begin include("architecture_tests.jl") end
 @safetestset "Neural Network                                                                  " begin include("neural_network_tests.jl") end
+@safetestset "Neural Network constructors                                                     " begin include("neural_network_constructors.jl") end 
+@safetestset "Initialparameters calls                                                         " begin include("initialparameters_calls.jl") end

@@ -33,7 +33,6 @@ Base.length(c::Chain) = length(c.layers)
 Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
 Base.eachindex(c::Chain) = 1:length(c)
 
-
 @generated function applychain(layers::Tuple, x::Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}, ps::Tuple) where AT<:AbstractArray
     N = length(fieldtypes((layers)))
     x_symbols = vcat([:x], [gensym() for _ in 1:N])
@@ -42,9 +41,17 @@ Base.eachindex(c::Chain) = 1:length(c)
     return Expr(:block, calls...)
 end
 
-function initialparameters(backend::Backend, ::Type{T}, model::Chain; kwargs...) where {T}
-    Tuple(initialparameters(backend, T, layer; kwargs...) for layer in model)
+function initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+    Tuple(initialparameters(layer, backend, T; kwargs...) for layer in model)
 end
+
+initialparameters(model::Chain, ::Type{T}; kwargs...) where {T <: Number} = initialparameters(model, CPU(), T; kwargs...)
+
+initialparameters(model::Chain, backend::Backend; kwargs...) = initialparameters(model, backend, Float32; kwargs...)
+
+initialparameters(model::Chain, backend::CPU; kwargs...) = initialparameters(model, backend, Float64; kwargs...)
+
+initialparameters(model::Chain; kwargs...) = initialparameters(model, CPU(); kwargs...)
 
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)
     for (layer, θ, dθ) in zip(chain, params, grad)

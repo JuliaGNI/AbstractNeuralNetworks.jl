@@ -1,4 +1,6 @@
-
+"""
+A supertype for `Chain`, `AbstractCell` etc.
+"""
 abstract type Model end
 
 
@@ -21,11 +23,11 @@ The `default_initializer()` returns `randn!`.
 """
 function initialparameters end
 
-initialparameters(::Backend, ::Type, model::Model; kwargs...) = error("initialparameters not implemented for model type ", typeof(model))
-initialparameters(::Type{T}, model::Model; kwargs...) where {T} = initialparameters(CPU(), T, model; kwargs...)
+initialparameters(model::Model, ::Backend, ::Type; kwargs...) = error("initialparameters not implemented for model type ", typeof(model))
+initialparameters(model::Model, ::Type{T}; kwargs...) where {T} = initialparameters(model, CPU(), T; kwargs...)
 
-initialparameters(rng::AbstractRNG, backend::Backend, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(backend, T, model; rng = rng, kwargs...)
-initialparameters(rng::AbstractRNG, ::Type{T}, model::Model; kwargs...) where {T} = initialparameters(T, model; rng = rng, kwargs...)
+initialparameters(rng::AbstractRNG, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T} = initialparameters(model, backend, T; rng = rng, kwargs...)
+initialparameters(rng::AbstractRNG, model::Model, ::Type{T}; kwargs...) where {T} = initialparameters(model, T; rng = rng, kwargs...)
 
 function parameterlength end
 

@@ -30,7 +30,7 @@ end
 
 usebias(::Recurrent{M, N, O, P, BIAS}) where {M, N, O, P, BIAS} = BIAS
 
-function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, O, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
+function initialparameters(cell::Recurrent{M, N, O, P}, backend::Backend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
     Wₛₛ = KernelAbstractions.zeros(backend, T, P, N)
     Wₛₓ = KernelAbstractions.zeros(backend, T, P, M)
     Wₒₛ = KernelAbstractions.zeros(backend, T, O, P)
@@ -44,7 +44,7 @@ function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, O,
     (Wₛₛ = Wₛₛ, Wₛₓ = Wₛₓ, Wₒₛ = Wₒₛ, bₛ = bₛ, bₒ = bₒ)
 end
 
-function initialparameters(backend::Backend, ::Type{T}, cell::Recurrent{M, N, 0, P}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,P,T}
+function initialparameters(cell::Recurrent{M, N, 0, P}, backend::Backend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,P,T}
     Wₛₛ = KernelAbstractions.zeros(backend, T, P, N)
     Wₛₓ = KernelAbstractions.zeros(backend, T, P, M)
     bₛ = KernelAbstractions.zeros(backend, T, P)
