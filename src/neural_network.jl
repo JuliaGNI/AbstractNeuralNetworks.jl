@@ -13,7 +13,7 @@ params(nn::NeuralNetwork) = nn.params
 
 function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     # initialize params
-    params = initialparameters(backend, T, model; kwargs...)
+    params = initialparameters(model, backend, T; kwargs...)
 
     # create neural network
     NeuralNetwork(arch, model, params)
@@ -35,44 +35,16 @@ function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) w
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(backend::Backend, ::Type{T}, model::Union{Architecture, Model}; kwargs...) where {T <: Number}
-    NeuralNetwork(model, backend, T; kwargs...)
-end
-
-function NeuralNetwork(::Type{T}, backend::Backend, model::Union{Architecture, Model}; kwargs...) where {T <: Number}
-    NeuralNetwork(backend, T, model; kwargs...)
-end
-
-function NeuralNetwork(::Type{T}, model::Union{Architecture, Model}, backend::Backend; kwargs...) where {T <: Number}
-    NeuralNetwork(backend, T, model; kwargs...)
-end
-
-function NeuralNetwork(::Type{T}, model::Union{Architecture, Model}; kwargs...) where {T <: Number}
-    NeuralNetwork(CPU(), T, model; kwargs...)
-end
-
-function NeuralNetwork(backend::Backend, model::Union{Architecture, Model}; kwargs...) 
-    NeuralNetwork(backend, Float32, model)
-end
-
-function NeuralNetwork(backend::CPU, model::Union{Architecture, Model}; kwargs...) 
-    NeuralNetwork(backend, Float64, model)
-end
-
 function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
-    NeuralNetwork(backend, model; kwargs...)
+    NeuralNetwork(model, backend, Float32; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}, backend::CPU; kwargs...)
+    NeuralNetwork(model, backend, Float64; kwargs...)
 end
 
 function NeuralNetwork(model::Union{Architecture, Model}; kwargs...)
-    NeuralNetwork(CPU(), model; kwargs...)
-end
-
-function NeuralNetwork(model::Union{Architecture, Model}, ::Type{T}, backend::Backend; kwargs...) where {T <: Number}
-    NeuralNetwork(backend, T, model; kwargs...)
-end
-
-function NeuralNetwork(backend::Backend, model::Union{Architecture, Model}, ::Type{T}; kwargs...) where {T <: Number}
-    NeuralNetwork(backend, T, model; kwargs...)
+    NeuralNetwork(model, CPU(); kwargs...)
 end
 
 (nn::NeuralNetwork)(x, params) = nn.model(x, params)
