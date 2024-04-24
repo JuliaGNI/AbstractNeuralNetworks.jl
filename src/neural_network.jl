@@ -1,11 +1,11 @@
 abstract type AbstractNeuralNetwork{AT} end
 
 
-struct NeuralNetwork{AT,MT,PT} <: AbstractNeuralNetwork{AT}
+struct NeuralNetwork{AT,MT,PT,BT} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
-    backend::Backend
+    backend::BT
 end
 
 architecture(nn::NeuralNetwork) = nn.architecture
