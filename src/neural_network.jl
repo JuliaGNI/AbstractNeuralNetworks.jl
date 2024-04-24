@@ -5,6 +5,7 @@ struct NeuralNetwork{AT,MT,PT} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
+    backend::Backend
 end
 
 architecture(nn::NeuralNetwork) = nn.architecture
@@ -16,7 +17,7 @@ function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Typ
     params = initialparameters(model, backend, T; kwargs...)
 
     # create neural network
-    NeuralNetwork(arch, model, params)
+    NeuralNetwork(arch, model, params, backend)
 end
 
 function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
