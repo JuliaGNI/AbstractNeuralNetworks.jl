@@ -1,22 +1,24 @@
 abstract type AbstractNeuralNetwork{AT} end
 
 
-struct NeuralNetwork{AT,MT,PT} <: AbstractNeuralNetwork{AT}
+struct NeuralNetwork{AT,MT,PT,BT} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
+    backend::BT
 end
 
 architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
+KernelAbstractions.get_backend(nn::NeuralNetwork) = nn.backend
 
 function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     # initialize params
     params = initialparameters(model, backend, T; kwargs...)
 
     # create neural network
-    NeuralNetwork(arch, model, params)
+    NeuralNetwork(arch, model, params, backend)
 end
 
 function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
