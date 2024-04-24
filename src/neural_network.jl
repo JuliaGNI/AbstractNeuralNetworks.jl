@@ -11,7 +11,7 @@ end
 architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
-KernelAbstractions.get_backend(nn::NeuralNetworks) == nn.backend
+KernelAbstractions.get_backend(nn::NeuralNetwork) == nn.backend
 
 function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     # initialize params
