@@ -42,6 +42,11 @@ Base.eachindex(c::Chain) = 1:length(c)
     return Expr(:block, calls...)
 end
 
+function applychain(layers::Tuple, q::AT, p::BT, ps::Tuple) where {AT<:AbstractArray, BT<:AbstractArray}
+    @assert axes(q) == axes(p)
+    applychain(layers, (q = q, p = p), ps)
+end
+
 function initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
     Tuple(initialparameters(layer, backend, T; kwargs...) for layer in model)
 end
