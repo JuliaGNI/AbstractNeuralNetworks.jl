@@ -33,7 +33,8 @@ Base.length(c::Chain) = length(c.layers)
 Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
 Base.eachindex(c::Chain) = 1:length(c)
 
-@generated function applychain(layers::Tuple, x::Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}, ps::Tuple) where AT<:AbstractArray
+@generated function applychain(layers::Tuple, x::Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, BT}}}, ps::Tuple) where {AT<:AbstractArray, BT<:AbstractArray}
+    @assert axes(x.q) == axes(x.p)
     N = length(fieldtypes((layers)))
     x_symbols = vcat([:x], [gensym() for _ in 1:N])
     calls = [:(($(x_symbols[i + 1])) = layers[$i]($(x_symbols[i]), ps[$i])) for i in 1:N]
