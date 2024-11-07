@@ -1,5 +1,7 @@
 module AbstractNeuralNetworks
 
+    using HDF5
+    using HDF5: H5DataStore
     using KernelAbstractions
     using LinearAlgebra
     using Random
