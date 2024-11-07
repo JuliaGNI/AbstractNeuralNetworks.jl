@@ -33,12 +33,6 @@ Base.isequal(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = isequal
 Base.:(==)(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = (params(p1) == params(p2))
 
 
-function _name(h5::H5DataStore)
-    name = HDF5.name(h5)
-    name = name[findlast(isequal('/'), name)+1:end]
-end
-
-
 function _create_group(h5::H5DataStore, name)
     if haskey(h5, name)
         g = h5[name]
