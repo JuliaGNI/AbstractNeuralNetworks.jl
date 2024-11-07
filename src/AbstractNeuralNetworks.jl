@@ -14,6 +14,11 @@ module AbstractNeuralNetworks
     include("architecture.jl")
 
 
+    export NeuralNetworkParameters
+
+    include("parameters.jl")
+
+
     export OneInitializer, ZeroInitializer, GlorotUniform
 
     include("initializer.jl")

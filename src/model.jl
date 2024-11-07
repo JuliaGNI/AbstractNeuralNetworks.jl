@@ -32,3 +32,5 @@ initialparameters(rng::AbstractRNG, model::Model, ::Type{T}; kwargs...) where {T
 function parameterlength end
 
 Base.eachindex(m::Model) = @error "You forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"
+
+update!(model::Model, params::Union{NamedTuple,NeuralNetworkParameters}, grad::Union{NamedTuple,NeuralNetworkParameters}, args...) = update!(model, values(params), values(grad), args...)
