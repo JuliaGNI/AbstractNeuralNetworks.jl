@@ -35,17 +35,14 @@ module AbstractNeuralNetworks
 
     include("chain.jl")
 
-    export Recurrent, LSTM, IdentityCell, GRU
+    export Recurrent, LSTM, IdentityCell, GRU, GridCell
 
     include("cells/abstract.jl")
     include("cells/recurrent.jl")
     include("cells/lstm.jl")
     include("cells/identity.jl")
     include("cells/gru.jl")
-
-    export GridCell
-
-    include("grid.jl")
+    include("cells/grid.jl")
 
     export AbstractNeuralNetwork
     export NeuralNetwork
