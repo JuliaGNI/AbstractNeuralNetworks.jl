@@ -8,9 +8,16 @@ If you want to implement `CustomLoss <: NetworkLoss` you need to define a functo
 ```
 where `model` is an instance of an `AbstractExplicitLayer` or a `Chain` and `ps` the parameters.
 
-See [`FeedForwardLoss`](@ref), [`TransformerLoss`](@ref), [`AutoEncoderLoss`](@ref) and [`ReducedLoss`](@ref) for examples.
+See [`FeedForwardLoss`](@ref), `GeometricMachineLearning.TransformerLoss`, `GeometricMachineLearning.AutoEncoderLoss` and `GeometricMachineLearning.ReducedLoss` for examples.
 """
 abstract type NetworkLoss end 
+
+function apply_toNT(fun, ps::NamedTuple...)
+    for p in ps
+        @assert keys(ps[1]) == keys(p)
+    end
+    NamedTuple{keys(ps[1])}(fun(p...) for p in zip(ps...))
+end
 
 # overload norm 
 _norm(dx::NT) where {AT <: AbstractArray, NT <: NamedTuple{(:q, :p), Tuple{AT, AT}}}  = (norm(dx.q) + norm(dx.p)) / √2 # we need this because of a Zygote problem
