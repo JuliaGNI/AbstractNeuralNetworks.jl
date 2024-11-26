@@ -1,21 +1,24 @@
 name = "AbstractNeuralNetworks"
 uuid = "60874f82-5ada-4c70-bd1c-fa6be7711c8a"
 authors = ["Michael Kraus"]
-version = "0.2.0"
+version = "0.3.2"
 
 [deps]
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
+HDF5 = "0.17.2"
 KernelAbstractions = "0.9"
 julia = "1.6"
 
 [extras]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Random", "SafeTestsets", "Test"]
+test = ["Random", "LinearAlgebra", "SafeTestsets", "Test"]

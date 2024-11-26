@@ -14,4 +14,5 @@ AbstractNeuralNetworks' development is coordinated by a group of *principal deve
 The following people contributed to SymbolicNetworks and are listed in alphabetical order:
 
 * Benedikt Brantner
+* Théo Duez
 * Michael Kraus

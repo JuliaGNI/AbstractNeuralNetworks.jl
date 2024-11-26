@@ -1,5 +1,7 @@
 module AbstractNeuralNetworks
 
+    using HDF5
+    using HDF5: H5DataStore
     using KernelAbstractions
     using LinearAlgebra
     using Random
@@ -12,6 +14,11 @@ module AbstractNeuralNetworks
     include("activation.jl")
 
     include("architecture.jl")
+
+
+    export NeuralNetworkParameters
+
+    include("parameters.jl")
 
 
     export OneInitializer, ZeroInitializer, GlorotUniform
@@ -34,17 +41,14 @@ module AbstractNeuralNetworks
 
     include("chain.jl")
 
-    export Recurrent, LSTM, IdentityCell, GRU
+    export Recurrent, LSTM, IdentityCell, GRU, GridCell
 
     include("cells/abstract.jl")
     include("cells/recurrent.jl")
     include("cells/lstm.jl")
     include("cells/identity.jl")
     include("cells/gru.jl")
-
-    export GridCell
-
-    include("grid.jl")
+    include("cells/grid.jl")
 
     export AbstractNeuralNetwork
     export NeuralNetwork

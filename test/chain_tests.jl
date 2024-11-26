@@ -1,4 +1,5 @@
 using AbstractNeuralNetworks
+using AbstractNeuralNetworks: IdentityActivation
 using Random
 using Test
 
@@ -9,6 +10,8 @@ o = zero(i)
 c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
+
+@test parameterlength(c) == 18
 
 @test eachindex(c) == 1:3
 
@@ -21,8 +24,11 @@ p6 = initialparameters(c, CPU(), Float64; init = OneInitializer(), rng = Random.
 
 @test p1 == p2 == p3 == p4 == p5 == p6
 
+@test Chain(Dense(2, 2, IdentityActivation()), Dense(2, 2, IdentityActivation())) == Chain(Chain(Dense(2, 2, IdentityActivation())), Dense(2, 2, IdentityActivation()))
 
 c = Chain(Dense(2, 2, x -> x))
+
+@test parameterlength(c) == 6
 
 p = initialparameters(c, Float64; init = OneInitializer())
 
