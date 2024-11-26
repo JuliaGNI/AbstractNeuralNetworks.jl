@@ -51,9 +51,11 @@ module AbstractNeuralNetworks
 
     include("neural_network.jl")
 
-    export AbstractPullback
+    include("losses.jl")
+
+    export NetworkLoss
+
     include("pullback.jl")
 
-    export NeuralNetworkLoss
-    include("losses.jl")
+    export AbstractPullback
 end

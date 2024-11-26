@@ -12,6 +12,9 @@ See [`FeedForwardLoss`](@ref), [`TransformerLoss`](@ref), [`AutoEncoderLoss`](@r
 """
 abstract type NetworkLoss end 
 
+const QPT{T} = NamedTuple{(:q, :p), Tuple{AT, AT}} where {T, AT <: AbstractArray{T}}
+const QPTOAT{T} = Union{QPT{T}, AbstractArray{T}} where T
+
 function (loss::NetworkLoss)(nn::NeuralNetwork, input::QPTOAT, output::QPTOAT)
     loss(nn.model, nn.params, input, output)
 end
