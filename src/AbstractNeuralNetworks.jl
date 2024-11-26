@@ -57,7 +57,7 @@ module AbstractNeuralNetworks
 
     include("losses.jl")
 
-    export NetworkLoss
+    export NetworkLoss, FeedForwardLoss
 
     include("pullback.jl")
 
