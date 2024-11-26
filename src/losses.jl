@@ -12,7 +12,7 @@ See [`FeedForwardLoss`](@ref), `GeometricMachineLearning.TransformerLoss`, `Geom
 """
 abstract type NetworkLoss end 
 
-function apply_toNT(fun, ps::NamedTuple...)
+function apply(fun, ps::NamedTuple...)
     for p in ps
         @assert keys(ps[1]) == keys(p)
     end
@@ -21,14 +21,14 @@ end
 
 # overload norm 
 _norm(dx::NT) where {AT <: AbstractArray, NT <: NamedTuple{(:q, :p), Tuple{AT, AT}}}  = (norm(dx.q) + norm(dx.p)) / √2 # we need this because of a Zygote problem
-_norm(dx::NamedTuple) = sum(apply_toNT(norm, dx)) / √length(dx)
+_norm(dx::NamedTuple) = sum(apply(norm, dx)) / √length(dx)
 _norm(A::AbstractArray) = norm(A)
 
 # overloaded +/- operation 
 _diff(dx₁::NT, dx₂::NT) where {AT <: AbstractArray, NT <: NamedTuple{(:q, :p), Tuple{AT, AT}}} = (q = dx₁.q - dx₂.q, p = dx₁.p - dx₂.p) # we need this because of a Zygote problem
-_diff(dx₁::NamedTuple, dx₂::NamedTuple) = apply_toNT(_diff, dx₁, dx₂)
+_diff(dx₁::NamedTuple, dx₂::NamedTuple) = apply(_diff, dx₁, dx₂)
 _diff(A::AbstractArray, B::AbstractArray) = A - B 
-_add(dx₁::NamedTuple, dx₂::NamedTuple) = apply_toNT(_add, dx₁, dx₂)
+_add(dx₁::NamedTuple, dx₂::NamedTuple) = apply(_add, dx₁, dx₂)
 _add(A::AbstractArray, B::AbstractArray) = A + B 
 
 const QPT{T} = NamedTuple{(:q, :p), Tuple{AT, AT}} where {T, AT <: AbstractArray{T}}
