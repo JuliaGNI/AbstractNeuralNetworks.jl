@@ -31,7 +31,6 @@ module AbstractNeuralNetworks
 
     include("model.jl")
 
-
     export Dense, Linear
 
     include("layers/abstract.jl")
@@ -56,4 +55,11 @@ module AbstractNeuralNetworks
 
     include("neural_network.jl")
 
+    include("losses.jl")
+
+    export NetworkLoss, FeedForwardLoss
+
+    include("pullback.jl")
+
+    export AbstractPullback
 end
