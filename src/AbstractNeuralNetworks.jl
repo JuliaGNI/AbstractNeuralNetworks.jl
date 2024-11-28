@@ -11,6 +11,9 @@ module AbstractNeuralNetworks
     include("utils/add.jl")
     include("utils/zero_vector.jl")
 
+
+    export Activation, IdentityActivation, SigmoidActivation
+
     include("activation.jl")
 
     include("architecture.jl")
@@ -31,10 +34,12 @@ module AbstractNeuralNetworks
 
     include("model.jl")
 
-    export Dense, Linear
+
+    export Dense, Linear, Affine
 
     include("layers/abstract.jl")
     include("layers/dense.jl")
+    include("layers/affine.jl")
     include("layers/linear.jl")
 
     export Chain

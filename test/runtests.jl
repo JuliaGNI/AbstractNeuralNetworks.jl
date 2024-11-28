@@ -4,6 +4,7 @@ using SafeTestsets
 @safetestset "Abstract Layer                                                                  " begin include("layers/abstract_layer_tests.jl") end
 @safetestset "Dense Layer                                                                     " begin include("layers/dense_layer_tests.jl") end
 @safetestset "Linear Layer                                                                    " begin include("layers/linear_layer_tests.jl") end
+@safetestset "Affine Layer                                                                    " begin include("layers/affine_layer_tests.jl") end
 @safetestset "Parameters                                                                      " begin include("parameters_tests.jl") end
 @safetestset "Chain                                                                           " begin include("chain_tests.jl") end
 @safetestset "Architecture                                                                    " begin include("architecture_tests.jl") end

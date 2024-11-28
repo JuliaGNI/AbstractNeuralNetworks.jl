@@ -51,9 +51,9 @@ AbstractNeuralNetworks.update!(c, p, p, 1.0)
 @test c(i, p) == 26 .* i
 
 
-c = Chain(Linear(2, 2),
-          Linear(2, 2),
-          Linear(2, 2))
+c = Chain(Affine(2, 2),
+          Affine(2, 2),
+          Affine(2, 2))
 
 p = initialparameters(c, Float64; init = OneInitializer())
 
