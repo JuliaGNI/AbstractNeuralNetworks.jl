@@ -12,8 +12,8 @@ module AbstractNeuralNetworks
     include("utils/zero_vector.jl")
 
 
-    export Activation, IdentityActivation, SigmoidActivation
-
+    export Activation, GenericActivation, IdentityActivation, SigmoidActivation
+    
     include("activation.jl")
 
     include("architecture.jl")
