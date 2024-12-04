@@ -52,14 +52,6 @@ function initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...)
     NamedTuple{keys}(vals)
 end
 
-initialparameters(model::Chain, ::Type{T}; kwargs...) where {T <: Number} = initialparameters(model, CPU(), T; kwargs...)
-
-initialparameters(model::Chain, backend::Backend; kwargs...) = initialparameters(model, backend, Float32; kwargs...)
-
-initialparameters(model::Chain, backend::CPU; kwargs...) = initialparameters(model, backend, Float64; kwargs...)
-
-initialparameters(model::Chain; kwargs...) = initialparameters(model, CPU(); kwargs...)
-
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)
     for (layer, θ, dθ) in zip(chain, params, grad)
         update!(layer, θ, dθ, η)

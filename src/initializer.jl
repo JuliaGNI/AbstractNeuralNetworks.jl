@@ -1,4 +1,3 @@
-
 abstract type AbstractInitializer end
 
 const Initializer = Union{AbstractInitializer, Base.Callable}
@@ -6,12 +5,17 @@ const Initializer = Union{AbstractInitializer, Base.Callable}
 struct ZeroInitializer <: AbstractInitializer end
 function (::ZeroInitializer)(_, x) 
     x .= KernelAbstractions.zero(x)
+    
+    nothing
 end
 
 struct OneInitializer <: AbstractInitializer end
+
 function (::OneInitializer)(_, x::AbstractArray{T}) where T 
     backend = get_backend(x)
     x .= KernelAbstractions.ones(backend, T, size(x))
+
+    nothing
 end
 
 default_initializer() = randn!

@@ -16,6 +16,7 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Static Neural Network Parameters" => "static_neural_network_parameters.md"
     ],
 )
 

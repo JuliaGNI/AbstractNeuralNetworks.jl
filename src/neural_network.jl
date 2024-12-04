@@ -1,7 +1,15 @@
 abstract type AbstractNeuralNetwork{AT} end
 
+"""
+    NeuralNetwork <: AbstractNeuralNetwork
 
-struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT} <: AbstractNeuralNetwork{AT}
+`Neuralnetwork` stores the [`Architecture`](@ref), [`Model`](@ref), neural network paramters and backend of the system.
+
+# Implementation
+
+The *backend* is taken from the package [`KernelAbstractions`](https://github.com/JuliaGPU/KernelAbstractions.jl), but is extended with e.g. [`CPUStatic`](@ref) in `AbstractNeuralNetworks`.
+"""
+struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT <: KernelAbstractions.Backend} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
@@ -37,12 +45,16 @@ function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) w
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
+function NeuralNetwork(model::Union{Architecture, Model}, backend::GPU; kwargs...)
     NeuralNetwork(model, backend, Float32; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::CPU; kwargs...)
+function NeuralNetwork(model::Union{Architecture, Model}, backend::Union{CPU, CPUStatic}; kwargs...)
     NeuralNetwork(model, backend, Float64; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
+    error("Default type for $(backend) not defined.")
 end
 
 function NeuralNetwork(model::Union{Architecture, Model}; kwargs...)
