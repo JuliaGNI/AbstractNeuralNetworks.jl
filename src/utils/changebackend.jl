@@ -1,7 +1,7 @@
 function changebackend(backend::Backend, x::AbstractArray{T}) where T
     _x = KernelAbstractions.allocate(backend, T, size(x)...)
     KernelAbstractions.copyto!(backend, _x, x)
-    nothing
+    _x
 end
 
 # this is pretty ugly
@@ -20,7 +20,6 @@ end
 
 """
     changebackend(backend, nn)
-
 
 # Extended help
 

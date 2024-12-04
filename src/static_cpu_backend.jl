@@ -43,6 +43,7 @@ function KernelAbstractions.copyto!(::CPUStatic, x::MArray, y::AbstractGPUArray)
     nothing
 end
 
+#type pyracy!
 function KernelAbstractions.get_backend(::MArray)
     CPUStatic()
 end
