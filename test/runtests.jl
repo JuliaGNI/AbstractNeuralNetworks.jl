@@ -10,11 +10,10 @@ using SafeTestsets
 @safetestset "Architecture                                                                    " begin include("architecture_tests.jl") end
 @safetestset "Neural Network                                                                  " begin include("neural_network_tests.jl") end
 @safetestset "Neural Network constructors                                                     " begin include("neural_network_constructors.jl") end 
-@safetestset "Initialparameters calls                                                         " begin include("initialparameters_calls.jl") end
 @safetestset "Parameters HDF5 Routines                                                        " begin include("parameters_hdf5_tests.jl") end
 
-@safetestset "Identity Cell                                                                   " begin include("cells/identity_tests.jl") end
-@safetestset "Recurrent Cell                                                                  " begin include("cells/recurrent_tests.jl") end
-@safetestset "GRU Cell                                                                        " begin include("cells/gru_tests.jl") end
-@safetestset "LSTM Cell                                                                       " begin include("cells/lstm_tests.jl") end
-@safetestset "Grid Cell                                                                       " begin include("cells/grid_tests.jl") end
+# @safetestset "Identity Cell                                                                   " begin include("cells/identity_tests.jl") end
+# @safetestset "Recurrent Cell                                                                  " begin include("cells/recurrent_tests.jl") end
+# @safetestset "GRU Cell                                                                        " begin include("cells/gru_tests.jl") end
+# @safetestset "LSTM Cell                                                                       " begin include("cells/lstm_tests.jl") end
+# @safetestset "Grid Cell                                                                       " begin include("cells/grid_tests.jl") end

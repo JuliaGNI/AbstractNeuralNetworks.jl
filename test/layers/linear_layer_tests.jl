@@ -4,7 +4,7 @@ using Test
 
 
 l = Linear(2, 2)
-p = initialparameters(l, Float64; init = OneInitializer(), rng = Random.default_rng())
+p = initialparameters(Random.default_rng(), OneInitializer(), l, CPU(), Float64)
 
 i = ones(2)
 o1 = zero(i)
@@ -14,6 +14,6 @@ o2 = zero(i)
 
 
 d = Dense(2, 2, IdentityActivation(); use_bias = false)
-p = initialparameters(d, Float64)
+p = initialparameters(Random.default_rng(), OneInitializer(), d, CPU(), Float64)
 
 @test l(i, p) == d(i, p)

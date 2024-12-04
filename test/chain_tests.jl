@@ -15,14 +15,7 @@ c = Chain(Dense(2, 2, x -> x),
 
 @test eachindex(c) == 1:3
 
-p1 = initialparameters(Random.default_rng(), c, Float64; init = OneInitializer())
-p2 = initialparameters(Random.default_rng(), c, CPU(), Float64; init = OneInitializer())
-p3 = initialparameters(c, Float64; init = OneInitializer())
-p4 = initialparameters(c, CPU(), Float64; init = OneInitializer())
-p5 = initialparameters(c, Float64; init = OneInitializer(), rng = Random.default_rng())
-p6 = initialparameters(c, CPU(), Float64; init = OneInitializer(), rng = Random.default_rng())
-
-@test p1 == p2 == p3 == p4 == p5 == p6
+p2 = initialparameters(Random.default_rng(), OneInitializer(), c, CPU(), Float64)
 
 @test Chain(Dense(2, 2, IdentityActivation()), Dense(2, 2, IdentityActivation())) == Chain(Chain(Dense(2, 2, IdentityActivation())), Dense(2, 2, IdentityActivation()))
 
@@ -30,7 +23,7 @@ c = Chain(Dense(2, 2, x -> x))
 
 @test parameterlength(c) == 6
 
-p = initialparameters(c, Float64; init = OneInitializer())
+p = initialparameters(Random.default_rng(), OneInitializer(), c, CPU(), Float64)
 
 @test c(i, p) == 3 .* i
 
@@ -42,7 +35,7 @@ AbstractNeuralNetworks.update!(c, p, p, 1.0)
 c = Chain(Dense(2, 2, x -> x),
           Dense(2, 2, x -> x))
 
-p = initialparameters(c, Float64; init = OneInitializer())
+p = initialparameters(Random.default_rng(), OneInitializer(), c, CPU(), Float64)
 
 @test c(i, p) == 7 .* i
 
@@ -55,7 +48,7 @@ c = Chain(Affine(2, 2),
           Affine(2, 2),
           Affine(2, 2))
 
-p = initialparameters(c, Float64; init = OneInitializer())
+p = initialparameters(Random.default_rng(), OneInitializer(), c, CPU(), Float64)
 
 @test c(i, p) == 15 .* i
 

@@ -11,7 +11,7 @@ Random.seed!(123)
 c = Chain(Dense(4, 4, x -> x),
           Dense(4, 4, x -> x),
           Dense(4, 4, x -> x))
-n = NeuralNetwork(c, Float64; init = GlorotUniform())
+n = NeuralNetwork(c, Float64; initializer = GlorotUniform())
 p = params(n)
 
 
