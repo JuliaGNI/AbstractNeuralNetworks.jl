@@ -46,10 +46,10 @@ end
 
 @inline applychain(layers::Tuple, x, ps::Union{NamedTuple,NeuralNetworkParameters}) = applychain(layers, x, values(ps))
 
-function initialparameters(model::Chain, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::Backend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
-    vals = Tuple(initialparameters(layer, backend, T; kwargs...) for layer in model)
-    NamedTuple{keys}(vals)
+    vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...) for layer in model)
+    NeuralNetworkParameters{keys}(vals)
 end
 
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)

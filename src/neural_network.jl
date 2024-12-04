@@ -21,9 +21,9 @@ model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
 KernelAbstractions.get_backend(nn::NeuralNetwork) = nn.backend
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
     # initialize params
-    params = NeuralNetworkParameters(initialparameters(model, backend, T; kwargs...))
+    params = initialparameters(rng, initializer, model, backend, T; kwargs...)
 
     # create neural network
     NeuralNetwork(arch, model, params, backend)
