@@ -1,15 +1,25 @@
-abstract type AbstractInitializer end
+"""
+    Initializer
 
-const Initializer = Union{AbstractInitializer, Base.Callable}
+Determines how neural network weights are initialized.
+"""
+abstract type Initializer end
 
-struct ZeroInitializer <: AbstractInitializer end
+"""
+    ZeroInitializer <: Initializer
+"""
+struct ZeroInitializer <: Initializer end
+
 function (::ZeroInitializer)(_, x) 
     x .= KernelAbstractions.zero(x)
     
     nothing
 end
 
-struct OneInitializer <: AbstractInitializer end
+"""
+    OneInitializer <: Initializer
+"""
+struct OneInitializer <: Initializer end
 
 function (::OneInitializer)(_, x::AbstractArray{T}) where T 
     backend = get_backend(x)
@@ -18,11 +28,16 @@ function (::OneInitializer)(_, x::AbstractArray{T}) where T
     nothing
 end
 
-default_initializer() = randn!
+"""
+    GlorotUniform <: Initializer
 
-struct GlorotUniform <: AbstractNeuralNetworks.AbstractInitializer end
+Glorot uniform was introduced by [glorot2010understanding](@cite).
+"""
+struct GlorotUniform <: Initializer end
 
 function (::GlorotUniform)(rng, x::AbstractVecOrMat{T}) where T
     rand!(rng, x)
     x .= sqrt(T(24.0) / sum(size(x))) * (x .- T(0.5)) 
 end
+
+const DefaultInitializer = GlorotUniform
