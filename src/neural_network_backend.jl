@@ -14,7 +14,7 @@ end
 """
     networkbackend(arr)
 
-Returns the [`NeuralNetworkBAckend`](@ref) of `arr`.
+Returns the [`NeuralNetworkBackend`](@ref) of `arr`.
 """
 function networkbackend(arr::AbstractArray)
     KernelAbstractions.get_backend(arr)

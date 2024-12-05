@@ -9,7 +9,7 @@ Chain(layers...)
 ```
 or a neural network architecture together with a backend and a parameter type:
 ```
-Chain(::Architecture, ::Backend, ::Type; kwargs...)
+Chain(::Architecture, ::NeuralNetworkBackend, ::Type; kwargs...)
 Chain(::Architecture, ::Type; kwargs...)
 ```
 If the backend is omitted, the default backend `CPU()` is chosen.
@@ -46,7 +46,7 @@ end
 
 @inline applychain(layers::Tuple, x, ps::Union{NamedTuple,NeuralNetworkParameters}) = applychain(layers, x, values(ps))
 
-function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::Backend, ::Type{T}; kwargs...) where T
+function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
     vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...) for layer in model)
     NeuralNetworkParameters{keys}(vals)
