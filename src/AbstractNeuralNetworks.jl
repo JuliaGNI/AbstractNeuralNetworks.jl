@@ -3,11 +3,13 @@ module AbstractNeuralNetworks
     using HDF5
     using HDF5: H5DataStore
     using KernelAbstractions
+    using GPUArraysCore: AbstractGPUArray
     using LinearAlgebra
+    using StaticArrays
     using Random
 
     export CPU, GPU
-    
+
     include("utils/add.jl")
     include("utils/zero_vector.jl")
 
@@ -23,6 +25,11 @@ module AbstractNeuralNetworks
 
     include("parameters.jl")
 
+    include("static_cpu_backend.jl")
+
+    export NeuralNetworkBackend, networkbackend
+
+    include("neural_network_backend.jl")
 
     export OneInitializer, ZeroInitializer, GlorotUniform
 
@@ -67,4 +74,7 @@ module AbstractNeuralNetworks
     include("pullback.jl")
 
     export AbstractPullback
+
+    export changebackend
+    include("utils/changebackend.jl")
 end

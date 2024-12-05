@@ -17,7 +17,7 @@ function (cell::GRU{M, N, O, P})(x::AbstractArray, st::AbstractArray, ps::NamedT
 end
 
 
-function initialparameters(cell::GRU{M, N, O, P}, backend::Backend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
+function initialparameters(cell::GRU{M, N, O, P}, backend::NeuralNetworkBackend, ::Type{T}; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng()) where {M,N,O,P,T}
     Wᵣₓ = KernelAbstractions.zeros(backend, T, N, M)
     Wᵣₕ = KernelAbstractions.zeros(backend, T, N, N)
     Wᵤₓ = KernelAbstractions.zeros(backend, T, N, M)

@@ -1,7 +1,15 @@
 abstract type AbstractNeuralNetwork{AT} end
 
+"""
+    NeuralNetwork <: AbstractNeuralNetwork
 
-struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT} <: AbstractNeuralNetwork{AT}
+`Neuralnetwork` stores the [`Architecture`](@ref), [`Model`](@ref), neural network paramters and backend of the system.
+
+# Implementation
+
+See [`NeuralNetworkBackend`](@ref) for the backend.
+"""
+struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT <: NeuralNetworkBackend} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
@@ -11,21 +19,21 @@ end
 architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
-KernelAbstractions.get_backend(nn::NeuralNetwork) = nn.backend
+networkbackend(nn::NeuralNetwork) = nn.backend
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkBackend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
     # initialize params
-    params = NeuralNetworkParameters(initialparameters(model, backend, T; kwargs...))
+    params = initialparameters(rng, initializer, model, backend, T; kwargs...)
 
     # create neural network
     NeuralNetwork(arch, model, params, backend)
 end
 
-function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(arch, Chain(arch), backend, T; kwargs...)
 end
 
-function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
@@ -37,12 +45,16 @@ function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) w
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
+function NeuralNetwork(model::Union{Architecture, Model}, backend::GPU; kwargs...)
     NeuralNetwork(model, backend, Float32; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::CPU; kwargs...)
+function NeuralNetwork(model::Union{Architecture, Model}, backend::Union{CPU, CPUStatic}; kwargs...)
     NeuralNetwork(model, backend, Float64; kwargs...)
+end
+
+function NeuralNetwork(model::Union{Architecture, Model}, backend::NeuralNetworkBackend; kwargs...)
+    error("Default type for $(backend) not defined.")
 end
 
 function NeuralNetwork(model::Union{Architecture, Model}; kwargs...)

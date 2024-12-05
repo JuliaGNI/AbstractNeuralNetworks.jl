@@ -32,7 +32,6 @@ Base.values(p::NeuralNetworkParameters) = values(params(p))
 Base.isequal(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = isequal(params(p1), params(p2))
 Base.:(==)(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = (params(p1) == params(p2))
 
-
 function _create_group(h5::H5DataStore, name)
     if haskey(h5, name)
         g = h5[name]

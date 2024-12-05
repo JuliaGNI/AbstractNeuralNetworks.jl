@@ -5,7 +5,7 @@ An `AbstractCell` is a map from $\mathbb{R}^{M}×\mathbb{R}^{N} \rightarrow \mat
 
 Concrete cell types should implement the following functions:
 
-- `initialparameters(backend::Backend, ::Type{T}, cell::AbstractCell; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())`
+- `initialparameters(backend::NeuralNetworkBackend, ::Type{T}, cell::AbstractCell; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())`
 - `update!(::AbstractLayer, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)`
 
 and the functors

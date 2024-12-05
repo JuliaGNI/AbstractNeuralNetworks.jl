@@ -8,3 +8,11 @@
 
 This package implements abstract and general data structures for the construction of neural networks, e.g., layers, chains, and architectures.
 It mainly serves as a common base package for [GeometricMachineLearning.jl](https://github.com/JuliaGNI/GeometricMachineLearning.jl) and [SymbolicNetworks.jl](https://github.com/JuliaGNI/SymbolicNetworks.jl).
+
+
+## Development
+
+We are using git hooks, e.g., to enforce that all tests pass before pushing. In order to activate these hooks, the following command must be executed once:
+```
+git config core.hooksPath .githooks
+```
