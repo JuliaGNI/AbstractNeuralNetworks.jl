@@ -1,4 +1,3 @@
-
 abstract type Activation end
 abstract type ScalarActivation <: Activation end
 abstract type VectorActivation <: Activation end
@@ -11,6 +10,9 @@ struct SigmoidActivation <: ScalarActivation end
 
 (::SigmoidActivation)(x, λ = 1) = 1/(1+exp(-λ*x))
 
+struct TanhActivation <: ScalarActivation end
+
+(::TanhActivation)(x) = tanh(x)
 
 struct GenericActivation{ST <: Base.Callable} <: ScalarActivation 
     σ::ST
@@ -24,3 +26,4 @@ end
 
 Activation(σ::Base.Callable) = GenericActivation(σ)
 Activation(σ::Activation) = σ
+Activation(::typeof(tanh)) = TanhActivation()
