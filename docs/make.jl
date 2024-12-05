@@ -7,7 +7,7 @@ PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 VERSION = PROJECT_TOML["version"]
 NAME = PROJECT_TOML["name"]
 AUTHORS = join(PROJECT_TOML["authors"], ", ") * " and contributors"
-GITHUB = "https://github.com/JuliaGNI/AbstractNeuralNetworks.jl"
+GITHUB = "github.com/JuliaGNI/AbstractNeuralNetworks.jl"
 
 bib = CitationBibliography(joinpath(@__DIR__, "src", "AbstractNeuralNetworks.bib"))
 
