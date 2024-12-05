@@ -7,9 +7,9 @@ abstract type AbstractNeuralNetwork{AT} end
 
 # Implementation
 
-The *backend* is taken from the package [`KernelAbstractions`](https://github.com/JuliaGPU/KernelAbstractions.jl), but is extended with e.g. [`CPUStatic`](@ref) in `AbstractNeuralNetworks`.
+See [`NeuralNetworkBackend`](@ref) for the backend.
 """
-struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT <: KernelAbstractions.Backend} <: AbstractNeuralNetwork{AT}
+struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT <: NeuralNetworkBackend} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
@@ -21,7 +21,7 @@ model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
 networkbackend(nn::NeuralNetwork) = nn.backend
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkBackend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
     # initialize params
     params = initialparameters(rng, initializer, model, backend, T; kwargs...)
 
@@ -29,11 +29,11 @@ function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Typ
     NeuralNetwork(arch, model, params, backend)
 end
 
-function NeuralNetwork(arch::Architecture, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(arch, Chain(arch), backend, T; kwargs...)
 end
 
-function NeuralNetwork(model::Model, backend::Backend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
@@ -53,7 +53,7 @@ function NeuralNetwork(model::Union{Architecture, Model}, backend::Union{CPU, CP
     NeuralNetwork(model, backend, Float64; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::Backend; kwargs...)
+function NeuralNetwork(model::Union{Architecture, Model}, backend::NeuralNetworkBackend; kwargs...)
     error("Default type for $(backend) not defined.")
 end
 

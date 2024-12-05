@@ -9,15 +9,15 @@ This is not a subtype of `KernelAbstractions.Backend` as it is associated with `
 """
 struct CPUStatic end
 
-function KernelAbstractions.ones(::CPUStatic, ::Type{T}, dims::Tuple) where T
+function KernelAbstractions.ones(::CPUStatic, ::Type{T}, dims::Integer...) where T
     ones(MArray{Tuple{dims...}, T})
 end
 
-function KernelAbstractions.zeros(::CPUStatic, ::Type{T}, dims::Tuple) where T
+function KernelAbstractions.zeros(::CPUStatic, ::Type{T}, dims::Integer...) where T
     zeros(MArray{Tuple{dims...}, T})
 end
 
-function KernelAbstractions.allocate(::CPUStatic, ::Type{T}, dims::Tuple) where T
+function KernelAbstractions.allocate(::CPUStatic, ::Type{T}, dims::Integer...) where T
     similar(MArray{Tuple{dims...}, T})
 end
 

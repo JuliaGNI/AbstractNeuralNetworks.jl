@@ -10,7 +10,7 @@ abstract type Model end
     Returns the initial parameters of a model, i.e., a layer or chain.
 
 ```
-initialparameters(backend::Backend, ::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
+initialparameters(backend::NeuralNetworkBackend, ::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
 initialparameters(::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
 ```
 
@@ -23,7 +23,7 @@ The `default_initializer()` returns `randn!`.
 """
 function initialparameters end
 
-initialparameters(rng::AbstractRNG, initializer::Initializer, model::Model, ::Backend, ::Type{T}; kwargs...) where T = error("initialparameters not implemented for model type ", typeof(model))
+initialparameters(rng::AbstractRNG, initializer::Initializer, model::Model, ::NeuralNetworkBackend, ::Type{T}; kwargs...) where T = error("initialparameters not implemented for model type ", typeof(model))
 
 function parameterlength end
 
