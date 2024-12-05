@@ -19,7 +19,7 @@ end
 architecture(nn::NeuralNetwork) = nn.architecture
 model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
-KernelAbstractions.get_backend(nn::NeuralNetwork) = nn.backend
+networkbackend(nn::NeuralNetwork) = nn.backend
 
 function NeuralNetwork(arch::Architecture, model::Model, backend::Backend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
     # initialize params

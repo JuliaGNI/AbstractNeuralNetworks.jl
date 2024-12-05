@@ -22,7 +22,7 @@ end
 struct OneInitializer <: Initializer end
 
 function (::OneInitializer)(_, x::AbstractArray{T}) where T 
-    backend = get_backend(x)
+    backend = networkbackend(x)
     x .= KernelAbstractions.ones(backend, T, size(x))
 
     nothing

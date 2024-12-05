@@ -27,6 +27,10 @@ module AbstractNeuralNetworks
 
     include("static_cpu_backend.jl")
 
+    export NeuralNetworkBackend, networkbackend
+
+    include("neural_network_backend.jl")
+
     export OneInitializer, ZeroInitializer, GlorotUniform
 
     include("initializer.jl")

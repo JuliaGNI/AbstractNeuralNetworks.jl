@@ -1,9 +1,13 @@
 """
-    CPUStatic <: KernelAbstractions.Backend
+    CPUStatic
 
 An additional backend that specifies allocation of [static arrays](https://github.com/JuliaArrays/StaticArrays.jl).
+
+# Implementation
+
+This is not a subtype of `KernelAbstractions.Backend` as it is associated with `StaticArrays.MArray` and such subtyping would therefore constitute type piracy.
 """
-struct CPUStatic <: KernelAbstractions.Backend end
+struct CPUStatic end
 
 function KernelAbstractions.ones(::CPUStatic, ::Type{T}, dims::Tuple) where T
     ones(MArray{Tuple{dims...}, T})
@@ -44,10 +48,6 @@ function KernelAbstractions.copyto!(::CPUStatic, x::MArray, y::AbstractGPUArray)
 end
 
 #type pyracy!
-function KernelAbstractions.get_backend(::MArray)
+function networkbackend(::MArray)
     CPUStatic()
-end
-
-function KernelAbstractions.get_backend(::StaticArray)
-    error("You should only use mutable static arrays.")
 end
