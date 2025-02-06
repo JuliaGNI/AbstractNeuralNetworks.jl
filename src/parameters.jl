@@ -13,7 +13,6 @@ NeuralNetworkParameters{Keys}(values) where {Keys} = NeuralNetworkParameters(Nam
 
 params(p::NeuralNetworkParameters) = getfield(p, :params)
 
-
 Base.hasproperty(::NeuralNetworkParameters{Keys}, s::Symbol) where {Keys} = s ∈ Keys
 Base.getproperty(p::NeuralNetworkParameters{Keys}, s::Symbol) where {Keys} = params(p)[s]
 

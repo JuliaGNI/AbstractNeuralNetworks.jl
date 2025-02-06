@@ -21,7 +21,7 @@ module AbstractNeuralNetworks
     include("architecture.jl")
 
 
-    export NeuralNetworkParameters
+    export NeuralNetworkParameters, params
 
     include("parameters.jl")
 

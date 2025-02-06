@@ -15,7 +15,7 @@ input_dim = 2
 n_hidden_layers = 100
 c = Chain(Dense(input_dim, 10, tanh), Tuple(Dense(10, 10, tanh) for _ in 1:n_hidden_layers)..., Dense(10, 1, tanh))
 nn = NeuralNetwork(c, backend)
-typeof(nn.params.L1.W)
+typeof(params(nn).L1.W)
 ```
 
 We can compare different evaluation times:

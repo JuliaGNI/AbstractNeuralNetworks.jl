@@ -15,7 +15,7 @@ function changebackend(backend::NeuralNetworkBackend, ps::NamedTuple)
 end
 
 function changebackend(backend::NeuralNetworkBackend, ps::NeuralNetworkParameters)
-    NeuralNetworkParameters(changebackend(backend, ps.params))
+    NeuralNetworkParameters(changebackend(backend, params(ps)))
 end
 
 """
@@ -26,5 +26,5 @@ end
 The function `changebackend` is defined for [`NeuralNetworkParameters`](@ref), [`NeuralNetwork`](@ref), `AbstractArray`s and `NamedTuple`s. This function is also exported.
 """
 function changebackend(backend::NeuralNetworkBackend, nn::NeuralNetwork)
-    NeuralNetwork(nn.architecture, nn.model, changebackend(backend, nn.params), backend)
+    NeuralNetwork(architecture(nn), model(nn), changebackend(backend, params(nn)), backend)
 end

@@ -30,3 +30,4 @@ p = NeuralNetworkParameters(ch)
 @test p.L2 == p[:L2] == l2
 
 @test values(p) == (l1,l2)
+@test params(p) == ch
