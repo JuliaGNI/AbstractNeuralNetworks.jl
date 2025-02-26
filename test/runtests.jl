@@ -12,6 +12,7 @@ using SafeTestsets
 @safetestset "Neural Network constructors                                                     " begin include("neural_network_constructors.jl") end 
 @safetestset "Parameters HDF5 Routines                                                        " begin include("parameters_hdf5_tests.jl") end
 @safetestset "Static CPU Backend                                                              " begin include("static_backend.jl") end
+@safetestset "Zygote pullback                                                                 " begin include("custom_pullback_test.jl") end
 
 # @safetestset "Identity Cell                                                                   " begin include("cells/identity_tests.jl") end
 # @safetestset "Recurrent Cell                                                                  " begin include("cells/recurrent_tests.jl") end
