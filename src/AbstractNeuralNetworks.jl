@@ -7,6 +7,7 @@ module AbstractNeuralNetworks
     using LinearAlgebra
     using StaticArrays
     using Random
+    using ZygoteRules
 
     export CPU, GPU
 
@@ -52,6 +53,8 @@ module AbstractNeuralNetworks
     export Chain
 
     include("chain.jl")
+
+    include("pullback_for_applychain.jl")
 
     export Recurrent, LSTM, IdentityCell, GRU, GridCell
 
