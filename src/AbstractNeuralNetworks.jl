@@ -1,7 +1,5 @@
 module AbstractNeuralNetworks
 
-    using HDF5
-    using HDF5: H5DataStore
     using KernelAbstractions
     using GPUArraysCore: AbstractGPUArray
     using LinearAlgebra
