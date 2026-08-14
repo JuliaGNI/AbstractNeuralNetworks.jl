@@ -16,6 +16,9 @@ and the functors
 """
 abstract type AbstractLayer{N,M} <: Model end
 
+input_dimension(::AbstractLayer{M}) where {M} = M
+output_dimension(::AbstractLayer{M, N}) where {M, N} = N
+
 
 """
     apply(layer::AbstractLayer, x, ps)

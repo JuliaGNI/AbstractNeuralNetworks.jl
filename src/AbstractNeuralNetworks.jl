@@ -14,7 +14,7 @@ module AbstractNeuralNetworks
 
 
     export Activation, GenericActivation, IdentityActivation, SigmoidActivation
-    
+
     include("activation.jl")
 
     include("architecture.jl")
@@ -42,6 +42,7 @@ module AbstractNeuralNetworks
 
 
     export Dense, Linear, Affine
+    export input_dimension, output_dimension
 
     include("layers/abstract.jl")
     include("layers/dense.jl")
