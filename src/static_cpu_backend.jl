@@ -27,15 +27,7 @@ function _statify(x::Array)
     MArray{Tuple{size(x)...}}(x)
 end
 
-function _statify(ps::NamedTuple)
-    _keys = keys(ps)
-    NamedTuple{_keys}(_statify.(values(ps)))
-end
-
-function _statify(ps::NeuralNetworkParameters)
-    _keys = keys(ps)
-    NeuralNetworkParameters{_keys}(_statify.(values(ps)))
-end
+_statify(ps::Union{NamedTuple, NeuralNetworkParameters}) = mapparameters(_statify, ps)
 
 function KernelAbstractions.copyto!(::CPUStatic, x::MArray, y::AbstractArray)
     copyto!(x, y)

@@ -1,7 +1,7 @@
 using Zygote
 using LinearAlgebra: norm
 using AbstractNeuralNetworks
-using AbstractNeuralNetworks: applychain
+using AbstractNeuralNetworks: applychain, NeuralNetworkParameters
 using Test
 
 nn = NeuralNetwork(Chain(Dense(10, 2, tanh), Dense(2, 10, tanh)))

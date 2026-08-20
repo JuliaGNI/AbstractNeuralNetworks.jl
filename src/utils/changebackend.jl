@@ -9,13 +9,12 @@ function changebackend(backend::NeuralNetworkBackend, x::MArray)
     changebackend(backend, Array(x))
 end
 
-function changebackend(backend::NeuralNetworkBackend, ps::NamedTuple)
-    ps_vals = Tuple(changebackend(backend, x) for x in values(ps))
-    NamedTuple{keys(ps)}(ps_vals)
-end
-
-function changebackend(backend::NeuralNetworkBackend, ps::NeuralNetworkParameters)
-    NeuralNetworkParameters(changebackend(backend, params(ps)))
+# One walk covers both containers: `mapparameters` recurses through the `NamedTuple`s and hands `f`
+# the leaves, returning a `NeuralNetworkParameters` for a `NeuralNetworkParameters` and a
+# `NamedTuple` for a `NamedTuple`. It also descends into `Tuple` branches, which the two methods this
+# replaces did not — they handed a `Tuple` straight to `KernelAbstractions.allocate`.
+function changebackend(backend::NeuralNetworkBackend, ps::Union{NamedTuple, NeuralNetworkParameters})
+    mapparameters(x -> changebackend(backend, x), ps)
 end
 
 """

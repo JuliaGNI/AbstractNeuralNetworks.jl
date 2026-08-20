@@ -1,28 +1,22 @@
-"""
+@doc raw"""
     NeuralNetworkParameters
 
-This struct stores the parameters of a neural network.
-In essence, it is just a wrapper around a `NamedTuple` of `NamedTuple`
-that provides some context, e.g., for storing parameters to file.
+Compatibility alias for `NeuralNetworkParameters.NetworkParameters`, which is where the parameters of
+a neural network live as of 0.7.0.
+
+The type is upstream now because the traversal that goes with it — flattening, saving, mapping a
+backend change over the leaves — was being written once per package. It is called
+`NetworkParameters` there because a package cannot export a type sharing its own name: the module
+binding wins at the `using` site, so `NeuralNetworkParameters(nt)` would try to call a `Module`.
+
+This alias is **not exported**. Reach it with
+
+```julia
+import AbstractNeuralNetworks: NeuralNetworkParameters
+```
+
+or, preferably in new code, use `NetworkParameters` from `NeuralNetworkParameters` directly. It is the
+same object either way, so `::Type{}` dispatch, `<: NeuralNetworkParameters` bounds and
+`NeuralNetworkParameters{keys}(vals)` construction all behave as they did.
 """
-struct NeuralNetworkParameters{Keys, ValueTypes}
-    params::NamedTuple{Keys, ValueTypes}
-end
-
-NeuralNetworkParameters{Keys}(values) where {Keys} = NeuralNetworkParameters(NamedTuple{Keys}(values))
-
-params(p::NeuralNetworkParameters) = getfield(p, :params)
-
-Base.hasproperty(::NeuralNetworkParameters{Keys}, s::Symbol) where {Keys} = s ∈ Keys
-Base.getproperty(p::NeuralNetworkParameters{Keys}, s::Symbol) where {Keys} = params(p)[s]
-
-Base.getindex(p::NeuralNetworkParameters, args...) = getindex(params(p), args...)
-Base.keys(p::NeuralNetworkParameters) = keys(params(p))
-Base.values(p::NeuralNetworkParameters) = values(params(p))
-Base.isequal(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = isequal(params(p1), params(p2))
-Base.:(==)(p1::NeuralNetworkParameters, p2::NeuralNetworkParameters) = (params(p1) == params(p2))
-
-function h5save end
-function h5load end
-function save end
-function load end
+const NeuralNetworkParameters = NetworkParameters

@@ -7,14 +7,8 @@ function ZygoteRules.pullback(::typeof(applychain), layers::Tuple, x, params::Ne
     y, applychain_for_nnps_pullback
 end
 
-function ZygoteRules.pullback(f::Function, params::NeuralNetworkParameters)
-    y, pb = ZygoteRules.pullback(f, NamedTuple{keys(params)}(values(params)))
-    function gradient_pullback(output)
-        p̄ = pb(output)[1]
-        (NeuralNetworkParameters{keys(params)}(_values(p̄)),)
-    end
-    y, gradient_pullback
-end
-
-_values(nt::NamedTuple) = values(nt)
-_values(nt::NamedTuple{(:params,), Tuple{AT}}) where {AT <: NamedTuple} = _values(nt.params)
+# The generic `ZygoteRules.pullback(f::Function, ::NeuralNetworkParameters)` used to live here too.
+# It belongs to `NeuralNetworkParameters` now (`ext/ZygoteRulesExt.jl` there): with the type defined
+# upstream, `ZygoteRules.pullback` was the only name in that signature this package owned, and a
+# method needs to own just one of them. The method above stays, because `applychain` is this
+# package's.
