@@ -3,7 +3,8 @@
 # walks and HDF5 path.
 
 using AbstractNeuralNetworks
-using AbstractNeuralNetworks: _statify, save, load
+using AbstractNeuralNetworks: CPUStatic, _statify, networkbackend, save, load
+using KernelAbstractions: allocate, ones, zeros
 using HDF5
 using NeuralNetworkParameters: NetworkParameters, params
 using Random
@@ -65,6 +66,36 @@ end
     static = _statify(params(NeuralNetwork(Chain(Dense(2, 3, tanh)))))
     @test static isa NetworkParameters
     @test static.L1.W isa MArray
+end
+
+@testset "the static backend allocates and reports itself" begin
+    # the three `KernelAbstractions` methods `CPUStatic` exists to provide, and the `networkbackend`
+    # that reads the backend back off a leaf — the round trip `changebackend` below depends on
+    @test ones(CPUStatic(), Float64, 2, 3) isa MArray
+    @test zeros(CPUStatic(), Float64, 2, 3) isa MArray
+    @test size(allocate(CPUStatic(), Float64, 2, 3)) == (2, 3)
+    @test allocate(CPUStatic(), Float64, 2, 3) isa MArray
+
+    nn = NeuralNetwork(Chain(Dense(2, 3, tanh)), CPUStatic())
+    @test networkbackend(params(nn).L1.W) == CPUStatic()
+
+    # only dense CPU arrays can be made static; a view is an `AbstractArray` that is not an `Array`
+    @test_throws ErrorException _statify(view(rand(3, 3), 1:2, 1:2))
+end
+
+@testset "a static network walks back to the CPU" begin
+    # the return leg of the walk, which reaches `changebackend(::NeuralNetworkBackend, ::MArray)`.
+    # `mapparameters` drives both directions, so both belong under test.
+    static = NeuralNetwork(Chain(Dense(2, 3, tanh), Dense(3, 1, tanh)), CPUStatic())
+    back = changebackend(CPU(), static)
+
+    @test params(back) isa NetworkParameters
+    @test params(back).L1.W isa Array
+    @test !(params(back).L1.W isa MArray)
+    @test params(back).L1.W == params(static).L1.W
+
+    x = rand(2)
+    @test back(x) ≈ static(x)
 end
 
 @testset "HDF5 round trip keeps the layer order" begin
