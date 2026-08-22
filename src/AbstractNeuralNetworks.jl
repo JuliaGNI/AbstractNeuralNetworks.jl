@@ -64,15 +64,6 @@ module AbstractNeuralNetworks
 
     include("pullback_for_applychain.jl")
 
-    export Recurrent, LSTM, IdentityCell, GRU, GridCell
-
-    include("cells/abstract.jl")
-    include("cells/recurrent.jl")
-    include("cells/lstm.jl")
-    include("cells/identity.jl")
-    include("cells/gru.jl")
-    include("cells/grid.jl")
-
     export AbstractNeuralNetwork
     export NeuralNetwork
 

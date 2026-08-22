@@ -12,9 +12,3 @@ using SafeTestsets
 @safetestset "Parameters seam                                                                 " begin include("parameters_seam_tests.jl") end
 @safetestset "Static CPU Backend                                                              " begin include("static_backend.jl") end
 @safetestset "Zygote pullback                                                                 " begin include("custom_pullback_test.jl") end
-
-# @safetestset "Identity Cell                                                                   " begin include("cells/identity_tests.jl") end
-# @safetestset "Recurrent Cell                                                                  " begin include("cells/recurrent_tests.jl") end
-# @safetestset "GRU Cell                                                                        " begin include("cells/gru_tests.jl") end
-# @safetestset "LSTM Cell                                                                       " begin include("cells/lstm_tests.jl") end
-# @safetestset "Grid Cell                                                                       " begin include("cells/grid_tests.jl") end
