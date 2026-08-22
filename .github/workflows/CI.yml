@@ -48,11 +48,6 @@ jobs:
                   version: ${{ matrix.version }}
                   arch: ${{ matrix.arch }}
             - uses: julia-actions/cache@v3
-            # `[sources]` in Project.toml is Pkg 1.11+, so the 1.10 jobs ignore it and fail to
-            # resolve the unregistered NeuralNetworkParameters. Adding it explicitly works on every
-            # version. Remove this step, and the `[sources]` entry, once it is registered.
-            - name: Add unregistered NeuralNetworkParameters
-              run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/JuliaGNI/NeuralNetworkParameters.jl", rev="main")'
             - uses: julia-actions/julia-buildpkg@v1
             - uses: julia-actions/julia-runtest@v1
             - uses: julia-actions/julia-processcoverage@v1

@@ -9,7 +9,7 @@ using SafeTestsets
 @safetestset "Architecture                                                                    " begin include("architecture_tests.jl") end
 @safetestset "Neural Network                                                                  " begin include("neural_network_tests.jl") end
 @safetestset "Neural Network constructors                                                     " begin include("neural_network_constructors.jl") end 
-@safetestset "Parameters compatibility                                                        " begin include("parameters_compat_tests.jl") end
+@safetestset "Parameters seam                                                                 " begin include("parameters_seam_tests.jl") end
 @safetestset "Static CPU Backend                                                              " begin include("static_backend.jl") end
 @safetestset "Zygote pullback                                                                 " begin include("custom_pullback_test.jl") end
 

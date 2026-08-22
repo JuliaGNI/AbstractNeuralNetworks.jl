@@ -20,20 +20,18 @@ module AbstractNeuralNetworks
     include("architecture.jl")
 
 
-    # The parameter container lives in `NeuralNetworkParameters` now, along with the tree walks and
-    # the HDF5 path that used to be duplicated here. The import is selective on purpose: a bare
-    # `using NeuralNetworkParameters` would bind the *module* name, and that is exactly the name the
-    # compatibility alias in `parameters.jl` needs.
+    # The parameter container lives in `NeuralNetworkParameters` now, as `NetworkParameters`, along
+    # with the tree walks and the HDF5 path that used to be duplicated here. This package is a
+    # consumer of it; 0.7 removed the `NeuralNetworkParameters` name from here entirely rather than
+    # leaving an alias behind, so that one type has one name across the ecosystem.
     #
     # `import` rather than `using ... :` for the five names that are extended or reached through this
     # module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
     # the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
-    import NeuralNetworkParameters: params, h5save, h5load, save, load
     using NeuralNetworkParameters: NetworkParameters, mapparameters
+    import NeuralNetworkParameters: params, h5save, h5load, save, load
 
     export params
-
-    include("parameters.jl")
 
     include("static_cpu_backend.jl")
 

@@ -44,12 +44,12 @@ Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
     return Expr(:block, calls...)
 end
 
-@inline applychain(layers::Tuple, x, ps::Union{NamedTuple,NeuralNetworkParameters}) = applychain(layers, x, values(ps))
+@inline applychain(layers::Tuple, x, ps::Union{NamedTuple,NetworkParameters}) = applychain(layers, x, values(ps))
 
 function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
     vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...) for layer in model)
-    NeuralNetworkParameters{keys}(vals)
+    NetworkParameters{keys}(vals)
 end
 
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)

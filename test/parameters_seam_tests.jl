@@ -1,36 +1,42 @@
 # The parameter container itself is tested in `NeuralNetworkParameters`. What is tested here is the
-# seam: that the compatibility alias behaves as the struct this package used to define, and that a
-# network built here reaches upstream's tree walks and HDF5 path.
+# seam: that a network built here carries upstream's container, and that it reaches upstream's tree
+# walks and HDF5 path.
 
 using AbstractNeuralNetworks
-using AbstractNeuralNetworks: NeuralNetworkParameters, _statify, save, load
+using AbstractNeuralNetworks: _statify, save, load
 using HDF5
+using NeuralNetworkParameters: NetworkParameters, params
 using Random
 using StaticArrays
 using Test
 
-import NeuralNetworkParameters as NNP
-
 Random.seed!(123)
 
-@testset "the alias is the upstream type" begin
-    # the same object, not a second definition — which is what makes `::Type{}` dispatch, `<:` bounds
-    # and `{keys}(vals)` construction work unchanged for code written against either name
-    @test NeuralNetworkParameters === NNP.NetworkParameters
+@testset "0.7 removed the `NeuralNetworkParameters` name from this package" begin
+    # 0.6 exported a struct of its own by that name. It is gone — not aliased — so that one type has
+    # one name; code written against the old name has to reach for `NetworkParameters` upstream.
+    @test !isdefined(AbstractNeuralNetworks, :NeuralNetworkParameters)
+    @test :NeuralNetworkParameters ∉ names(AbstractNeuralNetworks)
 
+    # `params` is still ours to import, and still the accessor for the wrapped `NamedTuple`
+    @test AbstractNeuralNetworks.params === params
+    @test :params ∈ names(AbstractNeuralNetworks)
+end
+
+@testset "the container behaves as the struct this package used to define" begin
     nt = (L1 = (W = [1.0 2.0], b = [3.0]),)
-    @test NeuralNetworkParameters(nt) == NeuralNetworkParameters{keys(nt)}(values(nt))
-    @test params(NeuralNetworkParameters(nt)) === nt
-    @test NamedTuple(NeuralNetworkParameters(nt)) === nt
+    @test NetworkParameters(nt) == NetworkParameters{keys(nt)}(values(nt))
+    @test params(NetworkParameters(nt)) === nt
+    @test NamedTuple(NetworkParameters(nt)) === nt
 end
 
 @testset "a network's parameters are one" begin
     nn = NeuralNetwork(Chain(Dense(4, 3, tanh), Dense(3, 2, tanh)))
     p = params(nn)
 
-    # `initialparameters(::Chain)` builds these with `NeuralNetworkParameters{keys}(vals)`, and
-    # `NeuralNetwork`'s `PT <: NeuralNetworkParameters` bound has to accept the result
-    @test p isa NeuralNetworkParameters
+    # `initialparameters(::Chain)` builds these with `NetworkParameters{keys}(vals)`, and
+    # `NeuralNetwork`'s `PT <: NetworkParameters` bound has to accept the result
+    @test p isa NetworkParameters
     @test keys(p) == (:L1, :L2)
     @test size(p.L1.W) == (3, 4)
 end
@@ -39,21 +45,25 @@ end
     nn = NeuralNetwork(Chain(Dense(4, 3, tanh), Dense(3, 2, tanh)))
     nn_cpu = changebackend(CPU(), nn)
 
-    @test params(nn_cpu) isa NeuralNetworkParameters
+    @test params(nn_cpu) isa NetworkParameters
     @test params(nn_cpu) == params(nn)
     # the `NamedTuple` method of the same walk
     @test changebackend(CPU(), params(nn).L1) == params(nn).L1
+    # and a `Tuple` branch inside the tree, which the two hand-written methods this replaced did
+    # not reach at all — there was no `Tuple` method, so such a branch was a `MethodError`
+    nested = NetworkParameters((L1 = (W = [1.0 2.0], pair = ([3.0], [4.0;;])),))
+    @test changebackend(CPU(), nested).L1.pair == nested.L1.pair
 end
 
 @testset "the static backend walks the tree" begin
     nn = NeuralNetwork(Chain(Dense(2, 3, tanh), Dense(3, 1, tanh)),
                        AbstractNeuralNetworks.CPUStatic())
-    @test params(nn) isa NeuralNetworkParameters
+    @test params(nn) isa NetworkParameters
     @test params(nn).L1.W isa MArray
 
     # `_statify` is the same walk, over a dense CPU network's parameters
     static = _statify(params(NeuralNetwork(Chain(Dense(2, 3, tanh)))))
-    @test static isa NeuralNetworkParameters
+    @test static isa NetworkParameters
     @test static.L1.W isa MArray
 end
 
@@ -73,7 +83,7 @@ end
             save(file, p)
         end
         pread = h5open(h5file, "r") do file
-            load(NeuralNetworkParameters, file)
+            load(NetworkParameters, file)
         end
 
         @test keys(pread) == keys(p)

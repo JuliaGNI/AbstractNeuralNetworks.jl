@@ -12,15 +12,6 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
-[weakdeps]
-Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
-
-# NeuralNetworkParameters is not in the General registry yet. `[sources]` is Pkg 1.11+, so the
-# Julia 1.10 CI jobs add it explicitly in `.github/workflows/CI.yml` instead. Both go away, along
-# with this comment, once it is registered.
-[sources]
-NeuralNetworkParameters = {url = "https://github.com/JuliaGNI/NeuralNetworkParameters.jl", rev = "main"}
-
 [compat]
 GPUArraysCore = "0.2.0"
 HDF5 = "0.17"
@@ -37,6 +28,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
 test = ["HDF5", "Random", "LinearAlgebra", "SafeTestsets", "Test", "Zygote"]
