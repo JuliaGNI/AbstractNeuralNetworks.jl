@@ -87,15 +87,15 @@ function _compute_loss(output_prediction::QPTOAT, output::QPTOAT)
     _norm(_diff(output_prediction, output)) / _norm(output)
 end 
 
-function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::Union{NeuralNetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
     output_prediction = model(input, ps)
     _compute_loss(output_prediction, output)
 end
 
-function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NeuralNetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
     error("Functor not defined for `NetworkLoss` of type $(typeof(loss)).")
 end
 
-function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NeuralNetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
     _compute_loss(model, ps, input, output)
 end

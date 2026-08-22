@@ -9,7 +9,7 @@ abstract type AbstractNeuralNetwork{AT} end
 
 See [`NeuralNetworkBackend`](@ref) for the backend.
 """
-struct NeuralNetwork{AT, MT, PT <: NeuralNetworkParameters, BT <: NeuralNetworkBackend} <: AbstractNeuralNetwork{AT}
+struct NeuralNetwork{AT, MT, PT <: NetworkParameters, BT <: NeuralNetworkBackend} <: AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
