@@ -1,5 +1,5 @@
 """
-A supertype for `Chain`, `AbstractCell` etc.
+A supertype for `Chain` and the layer types.
 """
 abstract type Model end
 
@@ -7,18 +7,21 @@ abstract type Model end
 """
     initialparameters
 
-    Returns the initial parameters of a model, i.e., a layer or chain.
+Returns the initial parameters of a model, i.e., a layer or chain.
 
 ```
-initialparameters(backend::NeuralNetworkBackend, ::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
-initialparameters(::Type{T}, model::Model; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())
+initialparameters(rng::AbstractRNG, init::Initializer, model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...)
 ```
 
-The `init!` function must have the following signature:
+An [`Initializer`](@ref) is called as
 ```
-init!(rng::AbstractRNG, x::AbstractArray)
+init(rng::AbstractRNG, x::AbstractArray)
 ```
-The `default_initializer()` returns `randn!`.
+and fills `x` in place. [`DefaultInitializer`](@ref) is [`GlorotUniform`](@ref).
+
+A model whose parameters are to be stored in a [`NeuralNetwork`](@ref) must return a
+`NetworkParameters`, as [`Chain`](@ref) does. A layer returns the plain `NamedTuple` that its own
+functor takes.
 
 """
 function initialparameters end

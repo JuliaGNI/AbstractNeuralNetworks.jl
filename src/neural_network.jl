@@ -25,6 +25,15 @@ function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkB
     # initialize params
     params = initialparameters(rng, initializer, model, backend, T; kwargs...)
 
+    # `NeuralNetwork` stores `PT <: NetworkParameters`, so a model is only usable here if its
+    # `initialparameters` returns one. `Chain` does; a bare layer returns the plain `NamedTuple`
+    # it hands to its own functor. Say so, rather than letting the inner constructor raise a
+    # `MethodError` that names neither the model nor the reason.
+    params isa NetworkParameters || throw(ArgumentError(
+        "initialparameters for model type $(typeof(model)) returned a $(typeof(params)), " *
+        "but NeuralNetwork requires a NetworkParameters. Wrap the model in a `Chain`, or have " *
+        "its initialparameters return a `NetworkParameters`."))
+
     # create neural network
     NeuralNetwork(arch, model, params, backend)
 end
@@ -37,7 +46,7 @@ function NeuralNetwork(model::Model, backend::NeuralNetworkBackend, ::Type{T}; k
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
-function NeuralNetwork(nn::Union{Architecture, Chain, GridCell}, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(nn::Union{Architecture, Model}, ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(nn, CPU(), T; kwargs...)
 end
 
@@ -63,10 +72,6 @@ end
 
 (nn::NeuralNetwork)(x, params) = nn.model(x, params)
 (nn::NeuralNetwork)(x) = nn(x, nn.params)
-
-(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x, st, params) = nn.model(x, st, params)
-(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x, params) = nn(x, nn.model.init_st, params)
-(nn::NeuralNetwork{AT, MT} where {AT, MT<:GridCell})(x) = nn(x, nn.model.init_st, nn.params)
 
 apply(nn::NeuralNetwork, x, args...) = nn(x, args...)
 

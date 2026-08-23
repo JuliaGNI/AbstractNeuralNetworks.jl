@@ -1,6 +1,6 @@
 # Static Neural Network Parameters
 
-We can also allocate neural network parameters using [`StaticArrays`](https://github.com/JuliaArrays/StaticArrays.jl). Therefore we simply need to set the keyword `static` to true in the [`NeuralNetwork`](@ref) constructor. 
+We can also allocate neural network parameters using [`StaticArrays`](https://github.com/JuliaArrays/StaticArrays.jl). Therefore we simply need to pass the `CPUStatic()` backend to the [`NeuralNetwork`](@ref) constructor. 
 
 !!! warning
     Static neural network parameters are only supported for dense CPU arrays. `AbstractNeuralNetworks` defines a type `CPUStatic`, but does not have equivalent GPU objects.

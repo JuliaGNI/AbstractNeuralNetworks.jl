@@ -5,7 +5,7 @@ An `AbstractLayer` is a map from $\mathbb{R}^{M} \rightarrow \mathbb{R}^{N}$.
 
 Concrete layer types should implement the following functions:
 
-- `initialparameters(backend::NeuralNetworkBackend, ::Type{T}, layer::AbstractLayer; init::Initializer = default_initializer(), rng::AbstractRNG = Random.default_rng())`
+- `initialparameters(rng::AbstractRNG, init::Initializer, layer::AbstractLayer, backend::NeuralNetworkBackend, ::Type{T}; kwargs...)`
 - `update!(::AbstractLayer, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)`
 
 and the functors
@@ -14,7 +14,7 @@ and the functors
 - `layer(y, x, ps)`
 
 """
-abstract type AbstractLayer{N,M} <: Model end
+abstract type AbstractLayer{M,N} <: Model end
 
 input_dimension(::AbstractLayer{M}) where {M} = M
 output_dimension(::AbstractLayer{M, N}) where {M, N} = N
@@ -45,4 +45,4 @@ end
 Abstract supertype for explicit layers.
 This type exists mainly for compatibility with Lux.
 """
-abstract type AbstractExplicitLayer{N,M} <: AbstractLayer{N,M} end
+abstract type AbstractExplicitLayer{M,N} <: AbstractLayer{M,N} end
