@@ -40,4 +40,10 @@ function (::GlorotUniform)(rng, x::AbstractVecOrMat{T}) where T
     x .= sqrt(T(24.0) / sum(size(x))) * (x .- T(0.5)) 
 end
 
+"""
+    DefaultInitializer
+
+The [`Initializer`](@ref) used when none is passed to the [`NeuralNetwork`](@ref) constructor via
+the `initializer` keyword. Currently an alias for [`GlorotUniform`](@ref).
+"""
 const DefaultInitializer = GlorotUniform

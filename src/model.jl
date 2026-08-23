@@ -7,7 +7,7 @@ abstract type Model end
 """
     initialparameters
 
-    Returns the initial parameters of a model, i.e., a layer or chain.
+Returns the initial parameters of a model, i.e., a layer or chain.
 
 ```
 initialparameters(rng::AbstractRNG, init::Initializer, model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...)
@@ -17,7 +17,11 @@ An [`Initializer`](@ref) is called as
 ```
 init(rng::AbstractRNG, x::AbstractArray)
 ```
-and fills `x` in place. `DefaultInitializer` is [`GlorotUniform`](@ref).
+and fills `x` in place. [`DefaultInitializer`](@ref) is [`GlorotUniform`](@ref).
+
+A model whose parameters are to be stored in a [`NeuralNetwork`](@ref) must return a
+`NetworkParameters`, as [`Chain`](@ref) does. A layer returns the plain `NamedTuple` that its own
+functor takes.
 
 """
 function initialparameters end
