@@ -57,45 +57,45 @@ This loss does not have any parameters.
 """
 struct FeedForwardLoss <: NetworkLoss end
 
+# `map` over `values(...)` rather than `NamedTuple{keys}(generator)`: the generator collects to a
+# `Vector`, and `ChainRulesCore.ProjectTo` has no method for a `Vector` of arrays as the tangent of
+# a `NamedTuple`, so any gradient through it throws. Mapping tuple-to-tuple keeps the tangent a
+# `Tuple` and differentiates. This used to be worked around by hardcoding the `(:q, :p)` case in
+# `_norm`/`_diff` below, which left every other `NamedTuple` undifferentiable.
 function apply(fun, ps::NamedTuple...)
     for p in ps
         @assert keys(ps[1]) == keys(p)
     end
-    NamedTuple{keys(ps[1])}(fun(p...) for p in zip(ps...))
+    NamedTuple{keys(ps[1])}(map(fun, map(values, ps)...))
 end
 
-# overload norm 
-_norm(dx::NT) where {AT <: AbstractArray, NT <: NamedTuple{(:q, :p), Tuple{AT, AT}}}  = (norm(dx.q) + norm(dx.p)) / √2 # we need this because of a Zygote problem
-_norm(dx::NamedTuple) = sum(apply(norm, dx)) / √length(dx)
+# overload norm
+_norm(dx::NamedTuple) = sum(map(_norm, values(dx))) / √length(dx)
 _norm(A::AbstractArray) = norm(A)
 
 # overloaded +/- operation 
-_diff(dx₁::NT, dx₂::NT) where {AT <: AbstractArray, NT <: NamedTuple{(:q, :p), Tuple{AT, AT}}} = (q = dx₁.q - dx₂.q, p = dx₁.p - dx₂.p) # we need this because of a Zygote problem
 _diff(dx₁::NamedTuple, dx₂::NamedTuple) = apply(_diff, dx₁, dx₂)
 _diff(A::AbstractArray, B::AbstractArray) = A - B 
 _add(dx₁::NamedTuple, dx₂::NamedTuple) = apply(_add, dx₁, dx₂)
 _add(A::AbstractArray, B::AbstractArray) = A + B 
 
-const QPT{T} = NamedTuple{(:q, :p), Tuple{AT, AT}} where {T, AT <: AbstractArray{T}}
-const QPTOAT{T} = Union{QPT{T}, AbstractArray{T}} where T
-
-function (loss::NetworkLoss)(nn::NeuralNetwork, input::QPTOAT, output::QPTOAT)
+function (loss::NetworkLoss)(nn::NeuralNetwork, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     loss(nn.model, nn.params, input, output)
 end
 
-function _compute_loss(output_prediction::QPTOAT, output::QPTOAT)
+function _compute_loss(output_prediction::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     _norm(_diff(output_prediction, output)) / _norm(output)
 end 
 
-function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     output_prediction = model(input, ps)
     _compute_loss(output_prediction, output)
 end
 
-function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     error("Functor not defined for `NetworkLoss` of type $(typeof(loss)).")
 end
 
-function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::QPTOAT, output::QPTOAT)
+function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     _compute_loss(model, ps, input, output)
 end

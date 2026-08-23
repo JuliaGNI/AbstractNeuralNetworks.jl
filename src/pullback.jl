@@ -5,8 +5,8 @@
 
 If a user wants to implement a custom `Pullback` the following two functions have to be extended:
 ```julia
-(_pullback::AbstractPullback)(ps, model, input_nt_output_nt::Tuple{<:QPTOAT, <:QPTOAT})
-(_pullback::AbstractPullback)(ps, model, input_nt::QPT)
+(_pullback::AbstractPullback)(ps, model, input_nt_output_nt::Tuple{<:ArrayOrNamedTuple, <:ArrayOrNamedTuple})
+(_pullback::AbstractPullback)(ps, model, input_nt::ArrayOrNamedTuple)
 ```
 based on the `loss::NetworkLoss` that's stored in `_pullback`. The output of _pullback needs to be a `Tuple` that contains:
 1. the `loss` evaluated at `ps` and `input_nt` (or `input_nt_output_nt`),
@@ -20,5 +20,5 @@ An example is `GeometricMachineLearning.ZygotePullback`.
 """
 abstract type AbstractPullback{NNLT<:NetworkLoss} end
 
-(_pullback::AbstractPullback)(ps, model, input_nt_output_nt::Tuple{<:QPTOAT, <:QPTOAT}) = error("Pullback not implemented for input-output pair!")
-(_pullback::AbstractPullback)(ps, model, input_nt::QPT) = error("Pullback not implemented for single input!")
+(_pullback::AbstractPullback)(ps, model, input_nt_output_nt::Tuple{<:ArrayOrNamedTuple, <:ArrayOrNamedTuple}) = error("Pullback not implemented for input-output pair!")
+(_pullback::AbstractPullback)(ps, model, input_nt::ArrayOrNamedTuple) = error("Pullback not implemented for single input!")
