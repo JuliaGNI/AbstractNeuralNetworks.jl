@@ -69,3 +69,29 @@ struct SumFields <: AbstractNeuralNetworks.AbstractExplicitLayer{1, 1} end
 @test applychain((SumFields(),), ab, (NamedTuple(),)) == ab.a + ab.b + ab.c
 @test applychain((SumFields(),), qp, (NamedTuple(),)) == qp.q + qp.p
 @test applychain((SumFields(),), ([1.0, 2.0], [3.0, 4.0]), (NamedTuple(),)) == [4.0, 6.0]
+
+
+# --- the public loss and pullback entry points ---------------------------------------------------
+# These are the surface `QPTOAT` used to type, so they should be exercised at both an array and a
+# `NamedTuple`, and through all three of the ways a loss can be called.
+
+nn = NeuralNetwork(Chain(Dense(3, 3, tanh)), Float64)
+loss = FeedForwardLoss()
+input, output = rand(3), rand(3)
+
+@test loss(nn, input, output) == loss(nn.model, nn.params, input, output)
+@test loss(nn, input, output) == _compute_loss(nn.model, nn.params, input, output)
+@test loss(nn, input, output) ≈ norm(output - nn(input)) / norm(output)
+@test loss(nn, input, input) ≈ _norm(_diff(nn(input), input)) / _norm(input)
+
+# a `NetworkLoss` with no functor of its own falls back to a message naming the type
+struct UnimplementedLoss <: AbstractNeuralNetworks.NetworkLoss end
+@test_throws "Functor not defined for `NetworkLoss` of type" UnimplementedLoss()(nn.model, nn.params, input, output)
+@test_throws "Functor not defined for `NetworkLoss` of type" UnimplementedLoss()(nn, input, output)
+
+# likewise the two `AbstractPullback` extension points documented on the abstract type
+struct UnimplementedPullback <: AbstractNeuralNetworks.AbstractPullback{FeedForwardLoss} end
+pb = UnimplementedPullback()
+@test_throws "Pullback not implemented for input-output pair!" pb(nn.params, nn.model, (input, output))
+@test_throws "Pullback not implemented for single input!" pb(nn.params, nn.model, input)
+@test_throws "Pullback not implemented for single input!" pb(nn.params, nn.model, qp)
