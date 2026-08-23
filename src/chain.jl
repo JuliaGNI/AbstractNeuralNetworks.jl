@@ -36,7 +36,12 @@ Base.eachindex(c::Chain) = 1:length(c)
 Base.isequal(c1::Chain, c2::Chain) = isequal(layers(c1), layers(c2))
 Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
 
-@generated function applychain(layers::Tuple, x::Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}, ps::Tuple) where {AT <: AbstractArray}
+# `x` is deliberately untyped, matching the `ps::Union{NamedTuple, NetworkParameters}` method below:
+# a chain applies whatever its layers accept, and it is the layers that should say what that is.
+# This used to be `Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}`, which both leaked
+# Hamiltonian vocabulary into a generic package (issue #31) and forced downstream packages to commit
+# type piracy to push anything else through a `Chain`.
+@generated function applychain(layers::Tuple, x, ps::Tuple)
     N = length(fieldtypes((layers)))
     x_symbols = vcat([:x], [gensym() for _ in 1:N])
     calls = [:(($(x_symbols[i + 1])) = layers[$i]($(x_symbols[i]), ps[$i])) for i in 1:N]

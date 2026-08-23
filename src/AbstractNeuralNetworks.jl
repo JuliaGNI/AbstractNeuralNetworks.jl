@@ -11,6 +11,7 @@ module AbstractNeuralNetworks
 
     include("utils/add.jl")
     include("utils/zero_vector.jl")
+    include("utils/array_named_tuple.jl")
 
 
     export Activation, GenericActivation, IdentityActivation, SigmoidActivation
