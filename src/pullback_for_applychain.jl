@@ -2,7 +2,7 @@ function ZygoteRules.pullback(::typeof(applychain), layers::Tuple, x, params::Ne
     y, pb = ZygoteRules.pullback(applychain, layers, x, values(params))
     function applychain_for_nnps_pullback(output)
         l̄, x̄, p̄ = pb(output)
-        l̄, x̄, NetworkParameters{keys(params)}(p̄)
+        l̄, x̄, NetworkParameters(NamedTuple{keys(params)}(p̄))
     end
     y, applychain_for_nnps_pullback
 end

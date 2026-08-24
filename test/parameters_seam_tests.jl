@@ -26,7 +26,7 @@ end
 
 @testset "the container behaves as the struct this package used to define" begin
     nt = (L1 = (W = [1.0 2.0], b = [3.0]),)
-    @test NetworkParameters(nt) == NetworkParameters{keys(nt)}(values(nt))
+    @test NetworkParameters(nt) == NetworkParameters(NamedTuple{keys(nt)}(values(nt)))
     @test params(NetworkParameters(nt)) === nt
     @test NamedTuple(NetworkParameters(nt)) === nt
 end
@@ -35,7 +35,7 @@ end
     nn = NeuralNetwork(Chain(Dense(4, 3, tanh), Dense(3, 2, tanh)))
     p = params(nn)
 
-    # `initialparameters(::Chain)` builds these with `NetworkParameters{keys}(vals)`, and
+    # `initialparameters(::Chain)` builds these from keys and values, and
     # `NeuralNetwork`'s `PT <: NetworkParameters` bound has to accept the result
     @test p isa NetworkParameters
     @test keys(p) == (:L1, :L2)

@@ -54,7 +54,7 @@ end
 function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
     vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...) for layer in model)
-    NetworkParameters{keys}(vals)
+    NetworkParameters(NamedTuple{keys}(vals))
 end
 
 function update!(chain::Chain, params::Tuple, grad::Tuple, η::AbstractFloat)

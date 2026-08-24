@@ -37,7 +37,7 @@ with
 using NeuralNetworkParameters: NetworkParameters
 ```
 
-and add `NeuralNetworkParameters` to your `Project.toml`. The type object is the same one, so `::Type{}` dispatch, `<:` bounds and `NetworkParameters{keys}(vals)` construction all behave as they did. `params`, `h5save`, `h5load`, `save` and `load` are still importable from `AbstractNeuralNetworks`.
+and add `NeuralNetworkParameters` to your `Project.toml`. The type object is the same one, so `::Type{}` dispatch and `<:` bounds behave as they did. A set is built from keys and values with `NetworkParameters(NamedTuple{keys}(vals))`, since the braces of `NetworkParameters{T}` name its element type. `params`, `h5save`, `h5load`, `save` and `load` are still importable from `AbstractNeuralNetworks`.
 
 
 ## Development
