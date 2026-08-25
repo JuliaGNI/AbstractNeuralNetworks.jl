@@ -29,7 +29,7 @@ module AbstractNeuralNetworks
     # `import` rather than `using ... :` for the five names that are extended or reached through this
     # module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
     # the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
-    using NeuralNetworkParameters: NetworkParameters, mapparameters
+    using NeuralNetworkParameters: NetworkParameters, ParameterSet, mapparameters
     import NeuralNetworkParameters: params, h5save, h5load, save, load
 
     export params

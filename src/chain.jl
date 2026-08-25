@@ -36,7 +36,7 @@ Base.eachindex(c::Chain) = 1:length(c)
 Base.isequal(c1::Chain, c2::Chain) = isequal(layers(c1), layers(c2))
 Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
 
-# `x` is deliberately untyped, matching the `ps::Union{NamedTuple, NetworkParameters}` method below:
+# `x` is deliberately untyped, matching the `ps::ParameterSet` method below:
 # a chain applies whatever its layers accept, and it is the layers that should say what that is.
 # This used to be `Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}`, which both leaked
 # Hamiltonian vocabulary into a generic package (issue #31) and forced downstream packages to commit
@@ -49,7 +49,7 @@ Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
     return Expr(:block, calls...)
 end
 
-@inline applychain(layers::Tuple, x, ps::Union{NamedTuple,NetworkParameters}) = applychain(layers, x, values(ps))
+@inline applychain(layers::Tuple, x, ps::ParameterSet) = applychain(layers, x, values(ps))
 
 function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))

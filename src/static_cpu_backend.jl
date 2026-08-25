@@ -27,7 +27,7 @@ function _statify(x::Array)
     MArray{Tuple{size(x)...}}(x)
 end
 
-_statify(ps::Union{NamedTuple, NetworkParameters}) = mapparameters(_statify, ps)
+_statify(ps::ParameterSet) = mapparameters(_statify, ps)
 
 function KernelAbstractions.copyto!(::CPUStatic, x::MArray, y::AbstractArray)
     copyto!(x, y)

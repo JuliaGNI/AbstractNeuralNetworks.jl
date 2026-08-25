@@ -13,7 +13,7 @@ end
 # the leaves, returning a `NetworkParameters` for a `NetworkParameters` and a `NamedTuple` for a
 # `NamedTuple`. It also descends into `Tuple` branches, which the two methods this replaces did not
 # — there was no `Tuple` method at all, so such a branch was a `MethodError`.
-function changebackend(backend::NeuralNetworkBackend, ps::Union{NamedTuple, NetworkParameters})
+function changebackend(backend::NeuralNetworkBackend, ps::ParameterSet)
     mapparameters(x -> changebackend(backend, x), ps)
 end
 
