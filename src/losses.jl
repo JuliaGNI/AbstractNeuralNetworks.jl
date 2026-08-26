@@ -87,15 +87,15 @@ function _compute_loss(output_prediction::ArrayOrNamedTuple, output::ArrayOrName
     _norm(_diff(output_prediction, output)) / _norm(output)
 end 
 
-function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     output_prediction = model(input, ps)
     _compute_loss(output_prediction, output)
 end
 
-function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     error("Functor not defined for `NetworkLoss` of type $(typeof(loss)).")
 end
 
-function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::Union{NetworkParameters, NamedTuple}, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     _compute_loss(model, ps, input, output)
 end
