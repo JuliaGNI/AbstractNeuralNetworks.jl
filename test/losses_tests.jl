@@ -4,7 +4,7 @@ using Test
 using Zygote
 
 using AbstractNeuralNetworks: _norm, _diff, _add, _compute_loss, applychain,
-                              ArrayNamedTuple, ArrayOrNamedTuple
+                              NamedTupleOfArrays, ArrayOrNamedTuple
 
 # The `(:q, :p)` pair that `QPT`/`QPTOAT` used to hardcode, and a three-field tuple that has nothing
 # to do with Hamiltonian phase space. The latter is the point: before #31 it could be evaluated but
@@ -19,14 +19,14 @@ ab2 = (a = [0.5, 1.0], b = [1.5, 2.0], c = [2.5, 3.0])
 
 # --- the type aliases ---------------------------------------------------------------------------
 
-@test qp isa ArrayNamedTuple
-@test ab isa ArrayNamedTuple
-@test qp isa ArrayNamedTuple{Float64}
+@test qp isa NamedTupleOfArrays
+@test ab isa NamedTupleOfArrays
+@test qp isa NamedTupleOfArrays{Float64}
 @test rand(3) isa ArrayOrNamedTuple
 @test qp isa ArrayOrNamedTuple
 # not every `NamedTuple` -- the values have to be arrays, and of one element type
-@test !((q = 1.0, p = 2.0) isa ArrayNamedTuple)
-@test !((q = rand(3), p = rand(Float32, 3)) isa ArrayNamedTuple{Float64})
+@test !((q = 1.0, p = 2.0) isa NamedTupleOfArrays)
+@test !((q = rand(3), p = rand(Float32, 3)) isa NamedTupleOfArrays{Float64})
 
 
 # --- values are unchanged from the deleted `(:q, :p)` methods -----------------------------------
