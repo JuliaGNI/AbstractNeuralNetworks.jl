@@ -87,15 +87,31 @@ function _compute_loss(output_prediction::ArrayOrNamedTuple, output::ArrayOrName
     _norm(_diff(output_prediction, output)) / _norm(output)
 end 
 
-function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+# `ps` is untyped here and in the two functors below. Both shapes reach them: a whole set of parameters
+# is a `NetworkParameters`, and the bare `NamedTuple` that a *reverse pass* produces arrives too,
+# because `NeuralNetworkParameters`' `ZygoteRules.pullback` for a container seeds the pass with the
+# wrapped `NamedTuple` rather than the container. Nothing here is dispatched on either — the model and
+# the input/output types settle every method — so naming a type would only be a claim about which of
+# the two shapes is allowed, and both are.
+#
+# **`applychain` writes both out and this does not, and that is not an inconsistency.** These forward
+# `ps` untouched to `model(input, ps)`; `applychain` *normalises* it, and its two methods exist to name
+# the two shapes `values` is defined on before handing a `Tuple` to the `@generated` method that does
+# the work. There the shape is the subject of the method; here it passes through.
+#
+# The cost of leaving it untyped is that a wrong `ps` fails inside `model(input, ps)` rather than at
+# the call. That is accepted rather than overlooked: an annotation naming both shapes would be a
+# `Union` over `Base.NamedTuple`, and two methods per functor would put six signatures in this file to
+# assert something no method reads.
+function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     output_prediction = model(input, ps)
     _compute_loss(output_prediction, output)
 end
 
-function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     error("Functor not defined for `NetworkLoss` of type $(typeof(loss)).")
 end
 
-function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     _compute_loss(model, ps, input, output)
 end

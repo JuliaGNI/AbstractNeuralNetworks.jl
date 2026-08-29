@@ -11,7 +11,7 @@ module AbstractNeuralNetworks
 
     include("utils/add.jl")
     include("utils/zero_vector.jl")
-    include("utils/array_named_tuple.jl")
+    include("utils/named_tuple_of_arrays.jl")
 
 
     export Activation, GenericActivation, IdentityActivation, SigmoidActivation
@@ -29,7 +29,7 @@ module AbstractNeuralNetworks
     # `import` rather than `using ... :` for the five names that are extended or reached through this
     # module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
     # the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
-    using NeuralNetworkParameters: NetworkParameters, ParameterSet, mapparameters
+    using NeuralNetworkParameters: NetworkParameters, mapparameters
     import NeuralNetworkParameters: params, h5save, h5load, save, load
 
     export params

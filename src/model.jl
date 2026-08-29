@@ -32,4 +32,4 @@ function parameterlength end
 
 Base.eachindex(m::Model) = @error "You forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"
 
-update!(model::Model, params::ParameterSet, grad::ParameterSet, args...) = update!(model, values(params), values(grad), args...)
+update!(model::Model, params::NetworkParameters, grad::NetworkParameters, args...) = update!(model, values(params), values(grad), args...)
