@@ -87,15 +87,22 @@ function _compute_loss(output_prediction::ArrayOrNamedTuple, output::ArrayOrName
     _norm(_diff(output_prediction, output)) / _norm(output)
 end 
 
-function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+# `ps` is untyped here and in the two functors below, matching `applychain`, which is what they reach
+# through `model(input, ps)`. A whole set of parameters is a `NetworkParameters`; the bare `NamedTuple`
+# that a *reverse pass* produces also arrives, because
+# `NeuralNetworkParameters`' `ZygoteRules.pullback` for a container seeds the pass with the wrapped
+# `NamedTuple` rather than the container. Nothing is dispatched on it either way — the model and the
+# input/output types settle every method here — so naming a type would only be a claim about which of
+# the two shapes is allowed, and both are.
+function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     output_prediction = model(input, ps)
     _compute_loss(output_prediction, output)
 end
 
-function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::NetworkLoss)(model::Union{Chain, AbstractExplicitLayer}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     error("Functor not defined for `NetworkLoss` of type $(typeof(loss)).")
 end
 
-function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps::ParameterSet, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
+function (loss::FeedForwardLoss)(model::Union{Chain, AbstractExplicitLayer}, ps, input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     _compute_loss(model, ps, input, output)
 end

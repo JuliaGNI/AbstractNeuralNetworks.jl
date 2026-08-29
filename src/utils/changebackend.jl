@@ -9,12 +9,20 @@ function changebackend(backend::NeuralNetworkBackend, x::MArray)
     changebackend(backend, Array(x))
 end
 
-# One walk covers both containers: `mapparameters` recurses through the `NamedTuple`s and hands `f`
-# the leaves, returning a `NetworkParameters` for a `NetworkParameters` and a `NamedTuple` for a
-# `NamedTuple`. It also descends into `Tuple` branches, which the two methods this replaces did not
-# — there was no `Tuple` method at all, so such a branch was a `MethodError`.
-function changebackend(backend::NeuralNetworkBackend, ps::ParameterSet)
+# `mapparameters` recurses through the branches and hands `f` the leaves, rebuilding what it was given.
+# It descends into `Tuple` branches too, so a multi-block leaf is covered without a method of its own.
+#
+# Two methods and not one on a union of the two types: a whole set of parameters is a
+# `NetworkParameters`, and a bare `NamedTuple` reaching here is a *branch* of one — a single layer,
+# which is a thing a caller legitimately asks to move on its own. They are different questions that
+# happen to share a body, so they are written as what they are. `changebackend` is this package's own
+# function, so a method on `NamedTuple` owns its signature.
+function changebackend(backend::NeuralNetworkBackend, ps::NetworkParameters)
     mapparameters(x -> changebackend(backend, x), ps)
+end
+
+function changebackend(backend::NeuralNetworkBackend, layer::NamedTuple)
+    mapparameters(x -> changebackend(backend, x), layer)
 end
 
 """

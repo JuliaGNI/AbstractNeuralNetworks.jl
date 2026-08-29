@@ -36,7 +36,7 @@ Base.eachindex(c::Chain) = 1:length(c)
 Base.isequal(c1::Chain, c2::Chain) = isequal(layers(c1), layers(c2))
 Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
 
-# `x` is deliberately untyped, matching the `ps::ParameterSet` method below:
+# `x` is deliberately untyped, matching the `ps::NetworkParameters` method below:
 # a chain applies whatever its layers accept, and it is the layers that should say what that is.
 # This used to be `Union{AbstractArray, NamedTuple{(:q, :p), Tuple{AT, AT}}}`, which both leaked
 # Hamiltonian vocabulary into a generic package (issue #31) and forced downstream packages to commit
@@ -49,7 +49,23 @@ Base.:(==)(c1::Chain, c2::Chain) = (layers(c1) == layers(c2))
     return Expr(:block, calls...)
 end
 
-@inline applychain(layers::Tuple, x, ps::ParameterSet) = applychain(layers, x, values(ps))
+# A whole set of parameters is a `NetworkParameters`, which is what `initialparameters` above returns
+# and what every package in this ecosystem passes around. The `Tuple` method is the one that does the
+# work — `values(ps)` hands it the layers in order — and it stays untyped in its layers, because a
+# chain applies whatever its layers accept.
+@inline applychain(layers::Tuple, x, ps::NetworkParameters) = applychain(layers, x, values(ps))
+
+# The bare `NamedTuple` a *reverse pass* produces, which is the reason this method exists and the only
+# reason. `NeuralNetworkParameters`' `ZygoteRules.pullback(f, ::NetworkParameters)` seeds the reverse
+# pass with the wrapped `NamedTuple` rather than the container, because that is what yields a tangent
+# keyed by the layers rather than a tangent for the wrapper's one field — so a chain differentiated
+# with respect to its parameters is *called* with the `NamedTuple`. `test/custom_pullback_test.jl` is
+# what fails without this.
+#
+# Two methods and not one on a union of the two types: they answer different questions that happen to
+# share a body. This one is not an invitation to pass a bare `NamedTuple` — nothing in this ecosystem
+# does outside a reverse pass — and writing it out says which of the two shapes each caller is in.
+@inline applychain(layers::Tuple, x, ps::NamedTuple) = applychain(layers, x, values(ps))
 
 function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
