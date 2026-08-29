@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.8.0]
+## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes
 `ParameterSet`, the `Union{NetworkParameters, NamedTuple}` these signatures were written on, because a
@@ -24,3 +24,16 @@ Two methods keep a `NamedTuple` signature, each for a stated reason rather than 
 Both are written as separate methods rather than as one signature over a union: they answer different
 questions that happen to share a body, and writing them out says which shape each caller is in.
 
+The **loss functors take `ps` untyped** rather than a method per shape, and that difference from
+`applychain` is deliberate: `applychain`'s two methods *normalise* — they name the two shapes `values`
+is defined on before handing a `Tuple` to the `@generated` method that does the work — while the loss
+functors forward `ps` untouched to `model(input, ps)` and read nothing of it. What it costs is that a
+wrong `ps` fails inside `model(input, ps)` rather than at the call.
+
+### Renamed
+
+- **`ArrayNamedTuple` is `NamedTupleOfArrays`**, and `ArrayTuple` is `TupleOfArrays`. The name says
+  what the alias is about, which here is a network's *inputs and outputs*; `GeometricOptimizers` had an
+  `ArrayNamedTuple` of *parameters*, and the two shared a name by coincidence rather than by meaning.
+  That one is gone as of `GeometricOptimizers` 0.7.0, so this is the only alias of the shape left in
+  the ecosystem. `ArrayOrNamedTuple` keeps its name.
