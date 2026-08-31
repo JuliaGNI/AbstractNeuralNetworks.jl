@@ -1,83 +1,79 @@
 module AbstractNeuralNetworks
 
-    using KernelAbstractions
-    using GPUArraysCore: AbstractGPUArray
-    using LinearAlgebra
-    using StaticArrays
-    using Random
-    using ZygoteRules
+using KernelAbstractions
+using GPUArraysCore: AbstractGPUArray
+using LinearAlgebra
+using StaticArrays
+using Random
+using ZygoteRules
 
-    export CPU, GPU
+export CPU, GPU
 
-    include("utils/add.jl")
-    include("utils/zero_vector.jl")
-    include("utils/named_tuple_of_arrays.jl")
+include("utils/add.jl")
+include("utils/zero_vector.jl")
+include("utils/named_tuple_of_arrays.jl")
 
+export Activation, GenericActivation, IdentityActivation, SigmoidActivation
 
-    export Activation, GenericActivation, IdentityActivation, SigmoidActivation
+include("activation.jl")
 
-    include("activation.jl")
+include("architecture.jl")
 
-    include("architecture.jl")
+# The parameter container lives in `NeuralNetworkParameters` now, as `NetworkParameters`, along
+# with the tree walks and the HDF5 path that used to be duplicated here. This package is a
+# consumer of it; 0.7 removed the `NeuralNetworkParameters` name from here entirely rather than
+# leaving an alias behind, so that one type has one name across the ecosystem.
+#
+# `import` rather than `using ... :` for the five names that are extended or reached through this
+# module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
+# the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
+using NeuralNetworkParameters: NetworkParameters, mapparameters
+import NeuralNetworkParameters: params, h5save, h5load, save, load
 
+export params
 
-    # The parameter container lives in `NeuralNetworkParameters` now, as `NetworkParameters`, along
-    # with the tree walks and the HDF5 path that used to be duplicated here. This package is a
-    # consumer of it; 0.7 removed the `NeuralNetworkParameters` name from here entirely rather than
-    # leaving an alias behind, so that one type has one name across the ecosystem.
-    #
-    # `import` rather than `using ... :` for the five names that are extended or reached through this
-    # module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
-    # the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
-    using NeuralNetworkParameters: NetworkParameters, mapparameters
-    import NeuralNetworkParameters: params, h5save, h5load, save, load
+include("static_cpu_backend.jl")
 
-    export params
+export NeuralNetworkBackend, networkbackend
 
-    include("static_cpu_backend.jl")
+include("neural_network_backend.jl")
 
-    export NeuralNetworkBackend, networkbackend
+export OneInitializer, ZeroInitializer, GlorotUniform
 
-    include("neural_network_backend.jl")
+include("initializer.jl")
 
-    export OneInitializer, ZeroInitializer, GlorotUniform
+export initialparameters
+export parameterlength
 
-    include("initializer.jl")
+include("model.jl")
 
+export Dense, Linear, Affine
+export input_dimension, output_dimension
 
-    export initialparameters
-    export parameterlength
+include("layers/abstract.jl")
+include("layers/dense.jl")
+include("layers/affine.jl")
+include("layers/linear.jl")
 
-    include("model.jl")
+export Chain
 
+include("chain.jl")
 
-    export Dense, Linear, Affine
-    export input_dimension, output_dimension
+include("pullback_for_applychain.jl")
 
-    include("layers/abstract.jl")
-    include("layers/dense.jl")
-    include("layers/affine.jl")
-    include("layers/linear.jl")
+export AbstractNeuralNetwork
+export NeuralNetwork
 
-    export Chain
+include("neural_network.jl")
 
-    include("chain.jl")
+include("losses.jl")
 
-    include("pullback_for_applychain.jl")
+export NetworkLoss, FeedForwardLoss
 
-    export AbstractNeuralNetwork
-    export NeuralNetwork
+include("pullback.jl")
 
-    include("neural_network.jl")
+export AbstractPullback
 
-    include("losses.jl")
-
-    export NetworkLoss, FeedForwardLoss
-
-    include("pullback.jl")
-
-    export AbstractPullback
-
-    export changebackend
-    include("utils/changebackend.jl")
+export changebackend
+include("utils/changebackend.jl")
 end

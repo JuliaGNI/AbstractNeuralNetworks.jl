@@ -14,7 +14,7 @@ struct TanhActivation <: ScalarActivation end
 
 (::TanhActivation)(x) = tanh(x)
 
-struct GenericActivation{ST <: Base.Callable} <: ScalarActivation 
+struct GenericActivation{ST <: Base.Callable} <: ScalarActivation
     σ::ST
     function GenericActivation(σ)
         # TODO: Check if sigma takes scalar arguments and return scalar

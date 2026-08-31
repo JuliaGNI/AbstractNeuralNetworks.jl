@@ -7,11 +7,11 @@ function Dense(m, n, σ = tanh; use_bias = true)
     Dense{m, n, use_bias, typeof(act)}(act)
 end
 
-function (layer::Dense{M,N,true})(x::AbstractArray, ps::NamedTuple) where {M,N}
+function (layer::Dense{M, N, true})(x::AbstractArray, ps::NamedTuple) where {M, N}
     layer.σ.(ps.W * x .+ ps.b)
 end
 
-function (layer::Dense{M,N,false})(x::AbstractArray, ps::NamedTuple) where {M,N}
+function (layer::Dense{M, N, false})(x::AbstractArray, ps::NamedTuple) where {M, N}
     layer.σ.(ps.W * x)
 end
 
@@ -25,7 +25,8 @@ end
 
 usebias(::Dense{M, N, BIAS}) where {M, N, BIAS} = BIAS
 
-function initialparameters(rng::AbstractRNG, init::Initializer, ::Dense{M,N,true}, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {M,N,T}
+function initialparameters(rng::AbstractRNG, init::Initializer, ::Dense{M, N, true},
+        backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {M, N, T}
     W = KernelAbstractions.zeros(backend, T, N, M)
     b = KernelAbstractions.zeros(backend, T, N)
     init(rng, W)
@@ -33,7 +34,8 @@ function initialparameters(rng::AbstractRNG, init::Initializer, ::Dense{M,N,true
     (W = W, b = b)
 end
 
-function initialparameters(rng::AbstractRNG, init::Initializer, ::Dense{M,N,false}, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {M,N,T}
+function initialparameters(rng::AbstractRNG, init::Initializer, ::Dense{M, N, false},
+        backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {M, N, T}
     W = KernelAbstractions.zeros(backend, T, N, M)
     init(rng, W)
     (W = W,)

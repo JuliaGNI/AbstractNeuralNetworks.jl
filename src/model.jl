@@ -3,7 +3,6 @@ A supertype for `Chain` and the layer types.
 """
 abstract type Model end
 
-
 """
     initialparameters
 
@@ -26,10 +25,17 @@ functor takes.
 """
 function initialparameters end
 
-initialparameters(rng::AbstractRNG, initializer::Initializer, model::Model, ::NeuralNetworkBackend, ::Type{T}; kwargs...) where T = error("initialparameters not implemented for model type ", typeof(model))
+function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Model,
+        ::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T}
+    error("initialparameters not implemented for model type ", typeof(model))
+end
 
 function parameterlength end
 
-Base.eachindex(m::Model) = @error "You forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"
+function Base.eachindex(m::Model)
+    @error "You forgot to define the eachindex function for the model of type "*string(typeof(m))*"!"
+end
 
-update!(model::Model, params::NetworkParameters, grad::NetworkParameters, args...) = update!(model, values(params), values(grad), args...)
+function update!(model::Model, params::NetworkParameters, grad::NetworkParameters, args...)
+    update!(model, values(params), values(grad), args...)
+end

@@ -30,7 +30,7 @@ end
 @inline layer(c::Chain, i) = c.layers[i]
 
 Base.length(c::Chain) = length(c.layers)
-Base.iterate(c::Chain, i=1) = i > length(c) ? nothing : (layer(c, i), i+1)
+Base.iterate(c::Chain, i = 1) = i > length(c) ? nothing : (layer(c, i), i+1)
 Base.eachindex(c::Chain) = 1:length(c)
 
 Base.isequal(c1::Chain, c2::Chain) = isequal(layers(c1), layers(c2))
@@ -67,9 +67,11 @@ end
 # does outside a reverse pass — and writing it out says which of the two shapes each caller is in.
 @inline applychain(layers::Tuple, x, ps::NamedTuple) = applychain(layers, x, values(ps))
 
-function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where T
+function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain,
+        backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T}
     keys = Tuple(Symbol("L$(i)") for i in eachindex(model))
-    vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...) for layer in model)
+    vals = Tuple(initialparameters(rng, initializer, layer, backend, T; kwargs...)
+    for layer in model)
     NetworkParameters(NamedTuple{keys}(vals))
 end
 

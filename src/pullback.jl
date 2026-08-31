@@ -18,7 +18,12 @@ _pullback(ps, model, input_nt)[2](1) # returns the gradient wrt to `ps`
 
 An example is `GeometricMachineLearning.ZygotePullback`.
 """
-abstract type AbstractPullback{NNLT<:NetworkLoss} end
+abstract type AbstractPullback{NNLT <: NetworkLoss} end
 
-(_pullback::AbstractPullback)(ps, model, input_nt_output_nt::Tuple{<:ArrayOrNamedTuple, <:ArrayOrNamedTuple}) = error("Pullback not implemented for input-output pair!")
-(_pullback::AbstractPullback)(ps, model, input_nt::ArrayOrNamedTuple) = error("Pullback not implemented for single input!")
+function (_pullback::AbstractPullback)(
+        ps, model, input_nt_output_nt::Tuple{<:ArrayOrNamedTuple, <:ArrayOrNamedTuple})
+    error("Pullback not implemented for input-output pair!")
+end
+function (_pullback::AbstractPullback)(ps, model, input_nt::ArrayOrNamedTuple)
+    error("Pullback not implemented for single input!")
+end

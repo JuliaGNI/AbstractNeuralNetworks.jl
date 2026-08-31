@@ -9,7 +9,8 @@ abstract type AbstractNeuralNetwork{AT} end
 
 See [`NeuralNetworkBackend`](@ref) for the backend.
 """
-struct NeuralNetwork{AT, MT, PT <: NetworkParameters, BT <: NeuralNetworkBackend} <: AbstractNeuralNetwork{AT}
+struct NeuralNetwork{AT, MT, PT <: NetworkParameters, BT <: NeuralNetworkBackend} <:
+       AbstractNeuralNetwork{AT}
     architecture::AT
     model::MT
     params::PT
@@ -21,7 +22,9 @@ model(nn::NeuralNetwork) = nn.model
 params(nn::NeuralNetwork) = nn.params
 networkbackend(nn::NeuralNetwork) = nn.backend
 
-function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkBackend, ::Type{T}; rng = Random.default_rng(), initializer = DefaultInitializer(), kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkBackend,
+        ::Type{T}; rng = Random.default_rng(),
+        initializer = DefaultInitializer(), kwargs...) where {T <: Number}
     # initialize params
     params = initialparameters(rng, initializer, model, backend, T; kwargs...)
 
@@ -38,19 +41,23 @@ function NeuralNetwork(arch::Architecture, model::Model, backend::NeuralNetworkB
     NeuralNetwork(arch, model, params, backend)
 end
 
-function NeuralNetwork(arch::Architecture, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, backend::NeuralNetworkBackend,
+        ::Type{T}; kwargs...) where {T <: Number}
     NeuralNetwork(arch, Chain(arch), backend, T; kwargs...)
 end
 
-function NeuralNetwork(model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(model::Model, backend::NeuralNetworkBackend, ::Type{T}; kwargs...) where {T <:
+                                                                                                 Number}
     NeuralNetwork(UnknownArchitecture(), model, backend, T; kwargs...)
 end
 
-function NeuralNetwork(nn::Union{Architecture, Model}, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(nn::Union{Architecture, Model}, ::Type{T}; kwargs...) where {T <:
+                                                                                    Number}
     NeuralNetwork(nn, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) where {T <: Number}
+function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) where {T <:
+                                                                                      Number}
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
 end
 

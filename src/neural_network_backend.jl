@@ -7,7 +7,7 @@ It largely inherits properties from [`KernelAbstractions.Backend`](https://githu
 """
 const NeuralNetworkBackend = Union{KernelAbstractions.Backend, CPUStatic}
 
-function networkbackend(backend::NeuralNetworkBackend) 
+function networkbackend(backend::NeuralNetworkBackend)
     error("Function `networkbackend` not defined for $(backend)")
 end
 

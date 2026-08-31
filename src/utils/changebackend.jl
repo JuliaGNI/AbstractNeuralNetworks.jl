@@ -1,4 +1,4 @@
-function changebackend(backend::NeuralNetworkBackend, x::AbstractArray{T}) where T
+function changebackend(backend::NeuralNetworkBackend, x::AbstractArray{T}) where {T}
     _x = KernelAbstractions.allocate(backend, T, size(x)...)
     KernelAbstractions.copyto!(backend, _x, x)
     _x

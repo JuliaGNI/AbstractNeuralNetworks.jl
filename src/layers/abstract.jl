@@ -14,11 +14,10 @@ and the functors
 - `layer(y, x, ps)`
 
 """
-abstract type AbstractLayer{M,N} <: Model end
+abstract type AbstractLayer{M, N} <: Model end
 
 input_dimension(::AbstractLayer{M}) where {M} = M
 output_dimension(::AbstractLayer{M, N}) where {M, N} = N
-
 
 """
     apply(layer::AbstractLayer, x, ps)
@@ -38,11 +37,10 @@ function apply!(y::AbstractArray, layer::AbstractLayer, x, ps)
     return layer(y, x, ps)
 end
 
-
 """
     AbstractExplicitLayer
 
 Abstract supertype for explicit layers.
 This type exists mainly for compatibility with Lux.
 """
-abstract type AbstractExplicitLayer{M,N} <: AbstractLayer{M,N} end
+abstract type AbstractExplicitLayer{M, N} <: AbstractLayer{M, N} end

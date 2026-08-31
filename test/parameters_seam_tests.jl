@@ -58,7 +58,7 @@ end
 
 @testset "the static backend walks the tree" begin
     nn = NeuralNetwork(Chain(Dense(2, 3, tanh), Dense(3, 1, tanh)),
-                       AbstractNeuralNetworks.CPUStatic())
+        AbstractNeuralNetworks.CPUStatic())
     @test params(nn) isa NetworkParameters
     @test params(nn).L1.W isa MArray
 
@@ -103,8 +103,8 @@ end
     # the writer records the key order. This package's own extension did not and could not pass this
     # test; upstream's writes a `keys` attribute.
     nn = NeuralNetwork(Chain(Dense(4, 4, tanh),
-                             Tuple(Dense(4, 4, tanh) for _ in 1:8)...,
-                             Dense(4, 4, tanh)))
+        Tuple(Dense(4, 4, tanh) for _ in 1:8)...,
+        Dense(4, 4, tanh)))
     p = params(nn)
     @test length(keys(p)) == 10
 
