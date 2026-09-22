@@ -15,6 +15,21 @@ function (layer::Dense{M, N, false})(x::AbstractArray, ps::NamedTuple) where {M,
     layer.σ.(ps.W * x)
 end
 
+# A matrix onto every slice of a 3-tensor, as one reshape and one GEMM: `_mul` is the same product
+# `GeometricMachineLearning`'s own kernels reach for. No kernel, so it needs none of `Dense`'s or
+# `Linear`'s callers to carry a backend-specific launch.
+function _mul(W::AbstractMatrix, x::AbstractArray)
+    reshape(W * reshape(x, size(x, 1), :), size(W, 1), Base.tail(size(x))...)
+end
+
+function (layer::Dense{M, N, true})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
+    layer.σ.(_mul(ps.W, x) .+ ps.b)
+end
+
+function (layer::Dense{M, N, false})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
+    layer.σ.(_mul(ps.W, x))
+end
+
 function (layer::Dense)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
     mul!(y, ps.W, x)
     if usebias(layer)

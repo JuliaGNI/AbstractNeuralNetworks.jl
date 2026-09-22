@@ -12,9 +12,16 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 ZygoteRules = "700de1a5-db45-46bc-99cf-38207098b444"
 
+[weakdeps]
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+
+[extensions]
+HDF5Ext = "HDF5"
+
 [compat]
 GPUArraysCore = "0.2.0"
 HDF5 = "0.17"
+JLArrays = "0.3"
 KernelAbstractions = "0.9"
 NeuralNetworkParameters = "0.3"
 StaticArrays = "1.9.8"
@@ -24,6 +31,7 @@ julia = "1.11"
 
 [extras]
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+JLArrays = "27aeb0d3-9eb9-45fb-866b-73c2ecf80fcb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
@@ -31,4 +39,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["HDF5", "Random", "LinearAlgebra", "SafeTestsets", "Test", "Zygote"]
+test = ["HDF5", "JLArrays", "Random", "LinearAlgebra", "SafeTestsets", "Test", "Zygote"]

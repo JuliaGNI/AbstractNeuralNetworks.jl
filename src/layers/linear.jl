@@ -10,3 +10,7 @@ end
 function (layer::Linear)(x::AbstractArray, ps::NamedTuple)
     ps.W * x
 end
+
+function (layer::Linear{M, N})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
+    _mul(ps.W, x)
+end
