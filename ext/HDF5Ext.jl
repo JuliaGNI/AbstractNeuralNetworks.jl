@@ -1,7 +1,7 @@
 module HDF5Ext
 
-using HDF5
-using AbstractNeuralNetworks
+using HDF5: HDF5
+using AbstractNeuralNetworks: CPU, Chain, NeuralNetwork
 import AbstractNeuralNetworks: NeuralNetworkBackend, Architecture
 import NeuralNetworkParameters: NetworkParameters, params, save, load
 

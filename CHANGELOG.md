@@ -2,31 +2,33 @@
 
 ## [Unreleased] — targeting 0.9.0
 
-**Three methods `GeometricMachineLearning` (GML) defined on ANN's own types move here**, because a
-method on `AbstractNeuralNetworks`' `Dense`, `Linear` or `NeuralNetwork`, or on `HDF5.H5DataStore`,
-is type piracy wherever it is written outside this package — GML committed it, in its
-`ext`-less `src/layers/resnet.jl` and in `ext/HDF5Ext.jl`. Nothing about behaviour changes here,
-only which package defines it.
+**Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A
+method on `Dense`, `Linear` or `NeuralNetwork` is type piracy wherever it is written outside this
+package. GML wrote three in `src/layers/resnet.jl`, and the `save`/`load` methods in `ext/HDF5Ext.jl`.
 
-- **`Dense` and `Linear` gain their own 3-tensor methods**, in `src/layers/dense.jl` and
-  `src/layers/linear.jl`. GML's `src/layers/resnet.jl:63-73` used to define
+Breaking for GML: a GML that still defines the three `resnet.jl` methods fails to precompile
+against this release, with "Method overwriting is not permitted during Module precompilation".
+GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound.
+
+- **`Dense`, `Linear` and `Affine` gain 3-tensor methods**, in `src/layers/dense.jl`,
+  `src/layers/linear.jl` and `src/layers/affine.jl`. GML's `src/layers/resnet.jl:63-73` defined
   `(d::Dense{M,N,true})(x::AbstractArray{T,3}, ps::NamedTuple)`, the matching `Dense{M,N,false}`
-  method, and `(d::Linear{M,N})(...)` — three methods on ANN's own types. All three now live here,
-  built on one private helper:
+  method, and `(d::Linear{M,N})(...)`. The `Affine` method is new: without it, an `Affine` on a
+  3-tensor is ambiguous between `(::Affine)(::AbstractArray, …)` and the `Dense{M,N,true}`
+  3-tensor method. All four use one private helper:
   ```julia
   function _mul(W::AbstractMatrix, x::AbstractArray)
       reshape(W * reshape(x, size(x, 1), :), size(W, 1), Base.tail(size(x))...)
   end
   ```
   one reshape and one GEMM against every slice of the tensor, rather than GML's old
-  `mat_tensor_mul`, which ran a hand-written KernelAbstractions `@kernel`. The name and the product
-  are deliberately the same `_mul` that GML's own `M3` task-file part will introduce elsewhere, so
-  GML's later kernels already match what is defined here. Checked against a per-slice loop, in
-  `Float32` and `Float64`, and on a `JLArray` standing in for a device — new `@testset`s in
-  `test/layers/dense_layer_tests.jl` and `test/layers/linear_layer_tests.jl`.
+  `mat_tensor_mul`, which ran a hand-written KernelAbstractions `@kernel`. Checked against a
+  per-slice loop, in `Float32` and `Float64`, and on a `JLArray` standing in for a device — new
+  `@testset`s in `test/layers/dense_layer_tests.jl`, `test/layers/linear_layer_tests.jl` and
+  `test/layers/affine_layer_tests.jl`.
 
 - **A new weak extension, `ext/HDF5Ext.jl`, on `HDF5`.** GML's own `ext/HDF5Ext.jl` used to define
-  `save(::HDF5.H5DataStore, ::NeuralNetwork)`, `save(::AbstractString, ::NeuralNetwork)`, and three
+  `save(::HDF5.H5DataStore, ::NeuralNetwork)`, `save(::AbstractString, ::NeuralNetwork)`, and four
   `load(::Type{NeuralNetwork}, ...)` methods — `save`/`load` are `NeuralNetworkParameters`'
   functions, `NeuralNetwork` is this package's type, and `H5DataStore` is HDF5's, so none of the
   three names belonged to GML. The same methods, unchanged in behaviour, now live in this
@@ -34,14 +36,6 @@ only which package defines it.
   `[extensions]`; `HDF5` stays in `[extras]` as before, and `JLArrays` joins it there for the
   device-backed 3-tensor tests. New `test/hdf5_tests.jl` covers a save/load round trip in both
   `Float32` and `Float64`, through an already-open `H5DataStore`, against a prototype parameter set.
-
-Both sets of methods were previously reachable only by loading GML, which is why they read as
-GML's code. `GeometricMachineLearning`'s own `src/layers/resnet.jl` and `ext/HDF5Ext.jl` still need
-the corresponding deletions once it can depend on this release — that is a separate, later change
-in GML, not this one. `Aqua.test_piracies(GeometricMachineLearning)` was checked against a scratch
-copy of GML with those three `resnet.jl` methods and the `HDF5Ext.jl` content removed (not a
-committed GML change) and reported zero piracies, confirming the fix is complete once GML catches
-up.
 
 ## [0.8.0] — 2026-08-29
 

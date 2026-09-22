@@ -5,10 +5,6 @@ using Test
 
 import AbstractNeuralNetworks: params
 
-# `save`/`load` on a `NeuralNetwork` used to be type piracy in `GeometricMachineLearning`'s
-# `ext/HDF5Ext.jl`: `NeuralNetworkParameters`' functions, this package's type, HDF5's type — none of
-# them GML's. Moved in here, where `NeuralNetwork` is defined.
-#
 # `TestArchitecture` stands in for a concrete architecture: `load(::Type{NeuralNetwork}, …)`
 # rebuilds the model through `Chain(arch)`, which every real architecture in this ecosystem defines.
 struct TestArchitecture <: AbstractNeuralNetworks.Architecture end
