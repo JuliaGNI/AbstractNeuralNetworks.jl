@@ -56,8 +56,8 @@ end
 @inline applychain(layers::Tuple, x, ps::NetworkParameters) = applychain(layers, x, values(ps))
 
 # The bare `NamedTuple` of a whole set. `SymbolicNeuralNetworks`' `SymbolicNeuralNetwork` admits one as
-# its parameters and calls its chain with it; its test "parameters nested in a plain NamedTuple" is what
-# fails without this method.
+# its parameters and calls its chain with it. The last test in `test/chain_tests.jl` fails without this
+# method, and so does SNN's testset "parameters nested in a plain NamedTuple".
 #
 # Two methods and not one on a union of the two types: they answer different questions that happen to
 # share a body, and writing them out says which of the two shapes each caller is in.
