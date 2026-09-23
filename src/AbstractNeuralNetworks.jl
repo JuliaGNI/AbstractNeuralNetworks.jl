@@ -23,7 +23,8 @@ include("architecture.jl")
 # `h5load`, `save`, `load`) come from `NeuralNetworkParameters`. This package adds a
 # `NeuralNetwork` method to `params` below, and `ext/HDF5Ext.jl` adds `NeuralNetwork` methods to
 # `save` and `load`. All five names are reachable as `AbstractNeuralNetworks.<name>`.
-using NeuralNetworkParameters: NetworkParameters, mapparameters
+using NeuralNetworkParameters: NetworkParameters, mapparameters, storage_gradient,
+                               map_cotangent
 import NeuralNetworkParameters: params, h5save, h5load, save, load
 
 export params
