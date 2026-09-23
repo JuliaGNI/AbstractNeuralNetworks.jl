@@ -55,16 +55,12 @@ end
 # chain applies whatever its layers accept.
 @inline applychain(layers::Tuple, x, ps::NetworkParameters) = applychain(layers, x, values(ps))
 
-# The bare `NamedTuple` a *reverse pass* produces, which is the reason this method exists and the only
-# reason. `NeuralNetworkParameters`' `ZygoteRules.pullback(f, ::NetworkParameters)` seeds the reverse
-# pass with the wrapped `NamedTuple` rather than the container, because that is what yields a tangent
-# keyed by the layers rather than a tangent for the wrapper's one field — so a chain differentiated
-# with respect to its parameters is *called* with the `NamedTuple`. `test/custom_pullback_test.jl` is
-# what fails without this.
+# The bare `NamedTuple` of a whole set. `SymbolicNeuralNetworks`' `SymbolicNeuralNetwork` admits one as
+# its parameters and calls its chain with it; its test "parameters nested in a plain NamedTuple" is what
+# fails without this method.
 #
 # Two methods and not one on a union of the two types: they answer different questions that happen to
-# share a body. This one is not an invitation to pass a bare `NamedTuple` — nothing in this ecosystem
-# does outside a reverse pass — and writing it out says which of the two shapes each caller is in.
+# share a body, and writing them out says which of the two shapes each caller is in.
 @inline applychain(layers::Tuple, x, ps::NamedTuple) = applychain(layers, x, values(ps))
 
 function initialparameters(rng::AbstractRNG, initializer::Initializer, model::Chain,
