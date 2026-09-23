@@ -7,25 +7,19 @@ function Dense(m, n, σ = tanh; use_bias = true)
     Dense{m, n, use_bias, typeof(act)}(act)
 end
 
-function (layer::Dense{M, N, true})(x::AbstractArray, ps::NamedTuple) where {M, N}
-    layer.σ.(ps.W * x .+ ps.b)
-end
-
-function (layer::Dense{M, N, false})(x::AbstractArray, ps::NamedTuple) where {M, N}
-    layer.σ.(ps.W * x)
-end
-
-# `W` applied to every slice `x[:, :, k]` of a 3-tensor, as one reshape and one matrix product.
-# It needs only `reshape` and `*`, so it runs on any array type that supports both.
-function _mul(W::AbstractMatrix, x::AbstractArray)
+# `W` applied along the first dimension of `x`. A vector or a matrix is one product; an array of
+# higher rank is reshaped to a matrix, multiplied once, and reshaped back. It needs only `reshape`
+# and `*`, so it runs on any array type that supports both.
+_mul(W, x::AbstractVecOrMat) = W * x
+function _mul(W, x::AbstractArray)
     reshape(W * reshape(x, size(x, 1), :), size(W, 1), Base.tail(size(x))...)
 end
 
-function (layer::Dense{M, N, true})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
+function (layer::Dense{M, N, true})(x::AbstractArray, ps::NamedTuple) where {M, N}
     layer.σ.(_mul(ps.W, x) .+ ps.b)
 end
 
-function (layer::Dense{M, N, false})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
+function (layer::Dense{M, N, false})(x::AbstractArray, ps::NamedTuple) where {M, N}
     layer.σ.(_mul(ps.W, x))
 end
 

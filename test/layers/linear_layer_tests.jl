@@ -18,22 +18,24 @@ p = initialparameters(Random.default_rng(), OneInitializer(), d, CPU(), Float64)
 
 @test l(i, p) == d(i, p)
 
-# `Linear` on a 3-tensor, the same `_mul` as `Dense`: checked against the per-slice loop in both
-# element types and on a JLArray.
-@testset "Linear on a 3-tensor ($T)" for T in (Float32, Float64)
+# `Linear` on a tensor of rank 3 and 4, the same `_mul` as `Dense`: checked against the layer
+# applied to each column `x[:, I]` in both element types, in the gradient, and on a JLArray.
+@testset "Linear on rank $(length(dims)) ($T)" for T in (Float32, Float64),
+    dims in ((4, 5, 2), (4, 5, 2, 3))
+
     l = Linear(4, 3)
     p = initialparameters(Random.default_rng(), GlorotUniform(), l, CPU(), T)
-    x = rand(T, 4, 5, 2)
+    x = rand(T, dims...)
+    columns = CartesianIndices(Base.tail(size(x)))
 
     y = l(x, p)
-    y_per_slice = cat((l(x[:, :, k], p) for k in axes(x, 3))...; dims = 3)
-    @test y ≈ y_per_slice
+    @test y ≈ stack(l(x[:, I], p) for I in columns)
     @test eltype(y) == T
 
     g = gradient((x, p) -> sum(l(x, p)), x, p)
-    g_per_slice = gradient((x, p) -> sum(sum(l(x[:, :, k], p)) for k in axes(x, 3)), x, p)
-    @test g[1] ≈ g_per_slice[1]
-    @test all(g[2][k] ≈ g_per_slice[2][k] for k in keys(p))
+    g_per_column = gradient((x, p) -> sum(sum(l(x[:, I], p)) for I in columns), x, p)
+    @test g[1] ≈ g_per_column[1]
+    @test all(g[2][k] ≈ g_per_column[2][k] for k in keys(p))
 
     xg = JLArray(x)
     pg = (W = JLArray(p.W),)

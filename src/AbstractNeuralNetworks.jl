@@ -19,14 +19,10 @@ include("activation.jl")
 
 include("architecture.jl")
 
-# The parameter container lives in `NeuralNetworkParameters` now, as `NetworkParameters`, along
-# with the tree walks and the HDF5 path that used to be duplicated here. This package is a
-# consumer of it; 0.7 removed the `NeuralNetworkParameters` name from here entirely rather than
-# leaving an alias behind, so that one type has one name across the ecosystem.
-#
-# `import` rather than `using ... :` for the five names that are extended or reached through this
-# module: `params` gains a `NeuralNetwork` method below, and downstream packages add methods to
-# the four storage generics via `import AbstractNeuralNetworks: h5save, save, load`.
+# The parameter container `NetworkParameters`, its tree walks and its HDF5 storage (`h5save`,
+# `h5load`, `save`, `load`) come from `NeuralNetworkParameters`. This package adds a
+# `NeuralNetwork` method to `params` below, and `ext/HDF5Ext.jl` adds `NeuralNetwork` methods to
+# `save` and `load`. All five names are reachable as `AbstractNeuralNetworks.<name>`.
 using NeuralNetworkParameters: NetworkParameters, mapparameters
 import NeuralNetworkParameters: params, h5save, h5load, save, load
 

@@ -9,16 +9,18 @@ package. GML defined three such methods, the 3-tensor methods on `Dense` and `Li
 
 Breaking for GML: a GML that still defines the three 3-tensor methods fails to precompile
 against this release, with "Method overwriting is not permitted during Module precompilation".
-GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound.
+GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound. The
+`backend` keyword of `load(NeuralNetwork, …)` is removed; the network loads on the CPU and
+`changebackend(backend, nn)` moves it to a device with parameters included.
 
-- **`Dense`, `Linear` and `Affine` accept 3-tensor inputs.** Each layer applies its weight
-  matrix to the first dimension of a 3-tensor, preserving the remaining dimensions. The
-  implementation uses only `reshape` and matrix multiplication, so it runs on any array type
-  that supports both — including device-backed arrays.
+- **`Dense`, `Linear` and `Affine` accept inputs of rank 3 or more.** Each layer applies its
+  weight matrix to the first dimension, preserving the remaining dimensions. The implementation
+  uses only `reshape` and matrix multiplication, so it runs on any array type that supports both
+  — including device-backed arrays.
 
-- **A new weak extension, `HDF5Ext`, provides `save` and `load` for `NeuralNetwork`.** These
-  methods moved from GML's extension unchanged in behaviour. The extension loads automatically
-  when HDF5 is available, with methods for both HDF5 stores and filenames.
+- **A new weak extension, `HDF5Ext`, provides `save` and `load` for `NeuralNetwork`.** The
+  extension defines methods for HDF5 stores; filename forms are `NeuralNetworkParameters`' own
+  methods. The extension loads automatically when HDF5 is available.
 
 ## [0.8.0] — 2026-08-29
 

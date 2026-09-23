@@ -9,9 +9,5 @@ function (layer::Affine)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
 end
 
 function (layer::Affine)(x::AbstractArray, ps::NamedTuple)
-    ps.W * x .+ ps.b
-end
-
-function (layer::Affine{M, N})(x::AbstractArray{T, 3}, ps::NamedTuple) where {M, N, T}
     _mul(ps.W, x) .+ ps.b
 end
