@@ -53,3 +53,6 @@ p = initialparameters(Random.default_rng(), OneInitializer(), c, CPU(), Float64)
 AbstractNeuralNetworks.update!(c, p, p, 1.0)
 
 @test c(i, p) == 106 .* i
+
+# A whole set as a bare `NamedTuple`, the shape `SymbolicNeuralNetworks` passes for a symbolic network.
+@test c(i, NamedTuple(p)) == 106 .* i

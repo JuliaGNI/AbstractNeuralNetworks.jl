@@ -22,6 +22,12 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   extension defines methods for HDF5 stores; filename forms are `NeuralNetworkParameters`' own
   methods. The extension loads automatically when HDF5 is available.
 
+- **Requires `NeuralNetworkParameters` 0.4** (compat only; no change to this package's own
+  behaviour). Under Zygote, NNP 0.4 calls the loss with the `NetworkParameters` itself rather than
+  the wrapped `NamedTuple`, and converts the cotangent of each leaf with `storage_gradient` to the
+  gradient with respect to that leaf's storage. A `Chain` still accepts a whole set as a bare
+  `NamedTuple` as well: `SymbolicNeuralNetworks` builds symbolic networks whose parameters are one.
+
 ## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes

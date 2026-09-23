@@ -87,22 +87,11 @@ function _compute_loss(output_prediction::ArrayOrNamedTuple, output::ArrayOrName
     _norm(_diff(output_prediction, output)) / _norm(output)
 end
 
-# `ps` is untyped here and in the two functors below. Both shapes reach them: a whole set of parameters
-# is a `NetworkParameters`, and the bare `NamedTuple` that a *reverse pass* produces arrives too,
-# because `NeuralNetworkParameters`' `ZygoteRules.pullback` for a container seeds the pass with the
-# wrapped `NamedTuple` rather than the container. Nothing here is dispatched on either — the model and
-# the input/output types settle every method — so naming a type would only be a claim about which of
-# the two shapes is allowed, and both are.
-#
-# **`applychain` writes both out and this does not, and that is not an inconsistency.** These forward
-# `ps` untouched to `model(input, ps)`; `applychain` *normalises* it, and its two methods exist to name
-# the two shapes `values` is defined on before handing a `Tuple` to the `@generated` method that does
-# the work. There the shape is the subject of the method; here it passes through.
-#
-# The cost of leaving it untyped is that a wrong `ps` fails inside `model(input, ps)` rather than at
-# the call. That is accepted rather than overlooked: an annotation naming both shapes would be a
-# `Union` over `Base.NamedTuple`, and two methods per functor would put six signatures in this file to
-# assert something no method reads.
+# `ps` is untyped here and in the two functors below. They forward it untouched to `model(input, ps)`,
+# and the model says what it accepts: a `Chain` takes a whole set, as a `NetworkParameters` or a bare
+# `NamedTuple`, and a single layer the `NamedTuple` of its own parameters. The model and the
+# input/output types settle every method, so a wrong `ps` fails inside `model(input, ps)` rather than at
+# the call.
 function _compute_loss(model::Union{AbstractExplicitLayer, Chain}, ps,
         input::ArrayOrNamedTuple, output::ArrayOrNamedTuple)
     output_prediction = model(input, ps)
