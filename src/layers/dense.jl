@@ -15,8 +15,8 @@ function (layer::Dense{M, N, false})(x::AbstractArray, ps::NamedTuple) where {M,
     layer.σ.(ps.W * x)
 end
 
-# A matrix onto every slice of a 3-tensor, as one reshape and one GEMM. There is no kernel, so
-# `Dense`, `Linear` and `Affine` on a 3-tensor run on any array type that supports `reshape` and `*`.
+# `W` applied to every slice `x[:, :, k]` of a 3-tensor, as one reshape and one matrix product.
+# It needs only `reshape` and `*`, so it runs on any array type that supports both.
 function _mul(W::AbstractMatrix, x::AbstractArray)
     reshape(W * reshape(x, size(x, 1), :), size(W, 1), Base.tail(size(x))...)
 end

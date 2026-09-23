@@ -2,6 +2,7 @@ using AbstractNeuralNetworks
 using JLArrays: JLArray
 using Random
 using Test
+using Zygote: gradient
 
 l = Affine(2, 2)
 p = initialparameters(Random.default_rng(), OneInitializer(), l, CPU(), Float64)
@@ -21,13 +22,18 @@ p = initialparameters(Random.default_rng(), OneInitializer(), d, CPU(), Float64)
 # element types and on a JLArray.
 @testset "Affine on a 3-tensor ($T)" for T in (Float32, Float64)
     l = Affine(4, 3)
-    p = initialparameters(Random.default_rng(), OneInitializer(), l, CPU(), T)
+    p = initialparameters(Random.default_rng(), GlorotUniform(), l, CPU(), T)
     x = rand(T, 4, 5, 2)
 
     y = l(x, p)
     y_per_slice = cat((l(x[:, :, k], p) for k in axes(x, 3))...; dims = 3)
     @test y ≈ y_per_slice
     @test eltype(y) == T
+
+    g = gradient((x, p) -> sum(l(x, p)), x, p)
+    g_per_slice = gradient((x, p) -> sum(sum(l(x[:, :, k], p)) for k in axes(x, 3)), x, p)
+    @test g[1] ≈ g_per_slice[1]
+    @test all(g[2][k] ≈ g_per_slice[2][k] for k in keys(p))
 
     xg = JLArray(x)
     pg = (W = JLArray(p.W), b = JLArray(p.b))

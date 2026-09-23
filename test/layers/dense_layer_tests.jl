@@ -2,6 +2,7 @@ using AbstractNeuralNetworks
 using JLArrays: JLArray
 using Random
 using Test
+using Zygote: gradient
 
 i = ones(2)
 o1 = zero(i)
@@ -30,13 +31,18 @@ p = initialparameters(Random.default_rng(), OneInitializer(), l, CPU(), Float64)
     use_bias in (true, false)
 
     d = Dense(4, 3, tanh; use_bias)
-    p = initialparameters(Random.default_rng(), OneInitializer(), d, CPU(), T)
+    p = initialparameters(Random.default_rng(), GlorotUniform(), d, CPU(), T)
     x = rand(T, 4, 5, 2)
 
     y = d(x, p)
     y_per_slice = cat((d(x[:, :, k], p) for k in axes(x, 3))...; dims = 3)
     @test y ≈ y_per_slice
     @test eltype(y) == T
+
+    g = gradient((x, p) -> sum(d(x, p)), x, p)
+    g_per_slice = gradient((x, p) -> sum(sum(d(x[:, :, k], p)) for k in axes(x, 3)), x, p)
+    @test g[1] ≈ g_per_slice[1]
+    @test all(g[2][k] ≈ g_per_slice[2][k] for k in keys(p))
 
     xg = JLArray(x)
     pg = use_bias ? (W = JLArray(p.W), b = JLArray(p.b)) : (W = JLArray(p.W),)

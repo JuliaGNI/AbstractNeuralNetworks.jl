@@ -4,38 +4,21 @@
 
 **Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A
 method on `Dense`, `Linear` or `NeuralNetwork` is type piracy wherever it is written outside this
-package. GML wrote three in `src/layers/resnet.jl`, and the `save`/`load` methods in `ext/HDF5Ext.jl`.
+package. GML defined three such methods, the 3-tensor methods on `Dense` and `Linear`, and the
+`save`/`load` methods for `NeuralNetwork` in its HDF5 extension.
 
-Breaking for GML: a GML that still defines the three `resnet.jl` methods fails to precompile
+Breaking for GML: a GML that still defines the three 3-tensor methods fails to precompile
 against this release, with "Method overwriting is not permitted during Module precompilation".
 GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound.
 
-- **`Dense`, `Linear` and `Affine` gain 3-tensor methods**, in `src/layers/dense.jl`,
-  `src/layers/linear.jl` and `src/layers/affine.jl`. GML's `src/layers/resnet.jl:63-73` defined
-  `(d::Dense{M,N,true})(x::AbstractArray{T,3}, ps::NamedTuple)`, the matching `Dense{M,N,false}`
-  method, and `(d::Linear{M,N})(...)`. The `Affine` method is new: without it, an `Affine` on a
-  3-tensor is ambiguous between `(::Affine)(::AbstractArray, …)` and the `Dense{M,N,true}`
-  3-tensor method. All four use one private helper:
-  ```julia
-  function _mul(W::AbstractMatrix, x::AbstractArray)
-      reshape(W * reshape(x, size(x, 1), :), size(W, 1), Base.tail(size(x))...)
-  end
-  ```
-  one reshape and one GEMM against every slice of the tensor, rather than GML's old
-  `mat_tensor_mul`, which ran a hand-written KernelAbstractions `@kernel`. Checked against a
-  per-slice loop, in `Float32` and `Float64`, and on a `JLArray` standing in for a device — new
-  `@testset`s in `test/layers/dense_layer_tests.jl`, `test/layers/linear_layer_tests.jl` and
-  `test/layers/affine_layer_tests.jl`.
+- **`Dense`, `Linear` and `Affine` accept 3-tensor inputs.** Each layer applies its weight
+  matrix to the first dimension of a 3-tensor, preserving the remaining dimensions. The
+  implementation uses only `reshape` and matrix multiplication, so it runs on any array type
+  that supports both — including device-backed arrays.
 
-- **A new weak extension, `ext/HDF5Ext.jl`, on `HDF5`.** GML's own `ext/HDF5Ext.jl` used to define
-  `save(::HDF5.H5DataStore, ::NeuralNetwork)`, `save(::AbstractString, ::NeuralNetwork)`, and four
-  `load(::Type{NeuralNetwork}, ...)` methods — `save`/`load` are `NeuralNetworkParameters`'
-  functions, `NeuralNetwork` is this package's type, and `H5DataStore` is HDF5's, so none of the
-  three names belonged to GML. The same methods, unchanged in behaviour, now live in this
-  extension. `Project.toml` gains `HDF5` as a `[weakdeps]` entry with `HDF5Ext = "HDF5"` under
-  `[extensions]`; `HDF5` stays in `[extras]` as before, and `JLArrays` joins it there for the
-  device-backed 3-tensor tests. New `test/hdf5_tests.jl` covers a save/load round trip in both
-  `Float32` and `Float64`, through an already-open `H5DataStore`, against a prototype parameter set.
+- **A new weak extension, `HDF5Ext`, provides `save` and `load` for `NeuralNetwork`.** These
+  methods moved from GML's extension unchanged in behaviour. The extension loads automatically
+  when HDF5 is available, with methods for both HDF5 stores and filenames.
 
 ## [0.8.0] — 2026-08-29
 
