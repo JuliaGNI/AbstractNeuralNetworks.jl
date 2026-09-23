@@ -39,3 +39,6 @@ end
 @safetestset "Zygote pullback                                                                 " begin
     include("custom_pullback_test.jl")
 end
+@safetestset "HDF5 save/load                                                                  " begin
+    include("hdf5_tests.jl")
+end

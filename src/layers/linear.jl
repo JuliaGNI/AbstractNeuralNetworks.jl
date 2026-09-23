@@ -8,5 +8,5 @@ function (layer::Linear)(y::AbstractArray, x::AbstractArray, ps::NamedTuple)
 end
 
 function (layer::Linear)(x::AbstractArray, ps::NamedTuple)
-    ps.W * x
+    _mul(ps.W, x)
 end

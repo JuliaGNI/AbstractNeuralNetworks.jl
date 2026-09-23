@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased] — targeting 0.9.0
+
+**Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A
+method on `Dense`, `Linear` or `NeuralNetwork` is type piracy wherever it is written outside this
+package. GML defined three such methods, the 3-tensor methods on `Dense` and `Linear`, and the
+`save`/`load` methods for `NeuralNetwork` in its HDF5 extension.
+
+Breaking for GML: a GML that still defines the three 3-tensor methods fails to precompile
+against this release, with "Method overwriting is not permitted during Module precompilation".
+GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound. The
+`backend` keyword of `load(NeuralNetwork, …)` is removed; the network loads on the CPU and
+`changebackend(backend, nn)` moves it to a device with parameters included.
+
+- **`Dense`, `Linear` and `Affine` accept inputs of rank 3 or more.** Each layer applies its
+  weight matrix to the first dimension, preserving the remaining dimensions. The implementation
+  uses only `reshape` and matrix multiplication, so it runs on any array type that supports both
+  — including device-backed arrays.
+
+- **A new weak extension, `HDF5Ext`, provides `save` and `load` for `NeuralNetwork`.** The
+  extension defines methods for HDF5 stores; filename forms are `NeuralNetworkParameters`' own
+  methods. The extension loads automatically when HDF5 is available.
+
 ## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes
