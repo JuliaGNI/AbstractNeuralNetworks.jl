@@ -28,6 +28,16 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   gradient with respect to that leaf's storage. A `Chain` still accepts a whole set as a bare
   `NamedTuple` as well: `SymbolicNeuralNetworks` builds symbolic networks whose parameters are one.
 
+- **Bug fix: a top-level `Zygote.pullback(applychain, layers, x, ps)` gives the storage gradient
+  of each leaf.** It returned the natural cotangent of each leaf in a `NetworkParameters`, which
+  NNP 0.4 reads as the gradient with respect to the storage. For a leaf whose `storage_gradient` is
+  not the identity, that gradient was wrong and came back as a dense matrix. It now converts each
+  leaf with NNP's `map_cotangent(storage_gradient, …)` and keeps the leaf's type; the return shape
+  is unchanged. A loss through a `Chain` was not affected. It also handles the case where the
+  parameter cotangent is `nothing` (when all layers have no parameters), which previously raised
+  a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
+  `map_cotangent` public.
+
 ## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes
