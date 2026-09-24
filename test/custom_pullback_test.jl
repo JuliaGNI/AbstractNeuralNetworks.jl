@@ -3,7 +3,6 @@ using LinearAlgebra: dot, norm
 using AbstractNeuralNetworks
 using AbstractNeuralNetworks: applychain
 using NeuralNetworkParameters
-using NeuralNetworkParameters: NetworkParameters
 using Test
 
 nn = NeuralNetwork(Chain(Dense(10, 2, tanh), Dense(2, 10, tanh)))
@@ -74,4 +73,18 @@ end
           central_difference(s -> dot(ȳ, applychain(layers, x, parameters(s, W₂))), S) rtol=rtol
     @test vec(p̄.L2.W) ≈ central_difference(
         w -> dot(ȳ, applychain(layers, x, parameters(S, reshape(w, size(W₂))))), vec(W₂)) rtol=rtol
+end
+
+# A layer without parameters. A chain of such layers gives the parameters no cotangent at all.
+struct NoParameters end
+(::NoParameters)(x, ps) = tanh.(x)
+
+@testset "applychain pullback without a parameter cotangent" begin
+    x = [0.1, 0.2]
+    _, pb = Zygote.pullback(applychain, (NoParameters(), NoParameters()), x,
+        NetworkParameters((L1 = NamedTuple(), L2 = NamedTuple())))
+    _, x̄, p̄ = pb(ones(2))
+
+    @test p̄ === nothing
+    @test x̄ ≈ (1 .- tanh.(tanh.(x)) .^ 2) .* (1 .- tanh.(x) .^ 2)
 end

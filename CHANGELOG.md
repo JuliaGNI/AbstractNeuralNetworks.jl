@@ -33,8 +33,10 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   NNP 0.4 reads as the gradient with respect to the storage. For a leaf whose `storage_gradient` is
   not the identity, that gradient was wrong and came back as a dense matrix. It now converts each
   leaf with NNP's `map_cotangent(storage_gradient, …)` and keeps the leaf's type; the return shape
-  is unchanged. A loss through a `Chain` was not affected. Raises the `NeuralNetworkParameters`
-  bound to 0.4.1, the release that makes `map_cotangent` public.
+  is unchanged. A loss through a `Chain` was not affected. It also handles the case where the
+  parameter cotangent is `nothing` (when all layers have no parameters), which previously raised
+  a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
+  `map_cotangent` public.
 
 ## [0.8.0] — 2026-08-29
 

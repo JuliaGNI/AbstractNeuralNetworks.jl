@@ -6,7 +6,7 @@ function ZygoteRules.pullback(::typeof(applychain), layers::Tuple, x, params::Ne
     function applychain_for_nnps_pullback(output)
         l̄, x̄, p̄ = pb(output)
         p̄ = map_cotangent(storage_gradient, values(params), p̄)
-        l̄, x̄, NetworkParameters(NamedTuple{keys(params)}(p̄))
+        l̄, x̄, p̄ === nothing ? nothing : NetworkParameters(NamedTuple{keys(params)}(p̄))
     end
     y, applychain_for_nnps_pullback
 end
