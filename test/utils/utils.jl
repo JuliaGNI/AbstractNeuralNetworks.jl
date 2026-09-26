@@ -4,6 +4,8 @@ using LinearAlgebra
 using Random
 using Test
 
+Random.seed!(123)
+
 a = rand(3)
 b = rand(3)
 x = zeros(3)

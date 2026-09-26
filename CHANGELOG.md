@@ -38,6 +38,14 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
   `map_cotangent` public.
 
+- **The test suite follows the common layout** (no change to the package's behaviour). The test
+  dependencies move from `[extras]`/`[targets]` to `test/Project.toml`; Aqua and Documenter are
+  new test dependencies. `runtests.jl` runs the groups `core` and `slow`, and each test file
+  sits at the path of the source file it tests. New: `test/quality/aqua.jl`, with the check for
+  method ambiguities marked broken for the two ambiguities of `apply` (#43), and
+  `test/quality/doctests.jl` in `slow`. `LinearAlgebra` and `Random` get the compat bound `"1"`,
+  which Aqua requires. The empty `test/architecture_tests.jl`, which held no test, is removed.
+
 ## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes
