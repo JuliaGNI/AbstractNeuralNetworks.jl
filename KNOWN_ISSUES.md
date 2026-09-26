@@ -1,18 +1,27 @@
 # Known issues
 
-## KI-1 · missing test · `parameterlength(::Dense)` is untested
+### K1 · No test covers `parameterlength(::Dense)`.
 
-`src/layers/dense.jl:59` computes the parameter count of a `Dense` layer. A mutant of that line
-survives every test file, on `main` and after the test-layout migration.
+- **location:** `src/layers/dense.jl:59`
+- **evidence:** the line computes the parameter count of a `Dense` layer. A mutant of that line
+  survives every test file.
+- **kind:** missing test
+- **found:** 2026-09-26
 
-## KI-2 · docs · the issue reference of the broken Aqua check is not on its line
+### K2 · The HDF5 extension test catches a broken `save` only by errors.
 
-`test/quality/aqua.jl:7–8`: the comment that names issue #43 is on the line above
-`Aqua.test_ambiguities(AbstractNeuralNetworks; broken = true)`. The test-layout rule wants the
-issue on the same line as the broken check. Fix: move `# issue #43` onto that line.
+- **location:** `test/integration/hdf5_ext.jl`
+- **evidence:** a mutant that makes `save(::HDF5.H5DataStore, ::NeuralNetwork)` write empty
+  parameters is caught by 6 errors (`KeyError: key "L1" not found`) and 2 failures, not by an
+  assertion that checks what `save` wrote.
+- **kind:** missing test
+- **found:** 2026-09-26
 
-## KI-3 · missing test · the HDF5 extension test catches a broken `save` only by errors
+### K3 · A comment in `src/chain.jl` names the test file `test/chain_tests.jl`, which is `test/chain.jl`.
 
-`test/integration/hdf5_ext.jl`: a mutant that makes `save(::HDF5.H5DataStore, ::NeuralNetwork)`
-write empty parameters is caught by 6 errors (`KeyError: key "L1" not found`) and 2 failures, not by
-an assertion that checks what `save` wrote.
+- **location:** `src/chain.jl:59`
+- **evidence:** the comment above `applychain(layers::Tuple, x, ps::NamedTuple)` reads "Without
+  this method, the test in `test/chain_tests.jl` that calls a `Chain` with a bare `NamedTuple`
+  fails". `git ls-files test/chain_tests.jl` prints nothing; the test is in `test/chain.jl`.
+- **kind:** docs
+- **found:** 2026-09-26
