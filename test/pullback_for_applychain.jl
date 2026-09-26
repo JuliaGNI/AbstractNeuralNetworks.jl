@@ -4,6 +4,9 @@ using AbstractNeuralNetworks
 using AbstractNeuralNetworks: applychain
 using NeuralNetworkParameters
 using Test
+import Random
+
+Random.seed!(123)
 
 nn = NeuralNetwork(Chain(Dense(10, 2, tanh), Dense(2, 10, tanh)))
 

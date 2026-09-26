@@ -4,6 +4,8 @@ using Random
 using Test
 using Zygote: gradient
 
+Random.seed!(123)
+
 i = ones(2)
 o1 = zero(i)
 o2 = zero(i)

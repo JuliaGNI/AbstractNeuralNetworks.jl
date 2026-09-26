@@ -2,9 +2,12 @@ using AbstractNeuralNetworks
 using LinearAlgebra: norm
 using Test
 using Zygote
+import Random
 
 using AbstractNeuralNetworks: _norm, _diff, _add, _compute_loss, applychain,
                               NamedTupleOfArrays, ArrayOrNamedTuple
+
+Random.seed!(123)
 
 # The `(:q, :p)` pair that `QPT`/`QPTOAT` used to hardcode, and a three-field tuple that has nothing
 # to do with Hamiltonian phase space. The latter is the point: before #31 it could be evaluated but
