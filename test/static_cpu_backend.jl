@@ -1,5 +1,6 @@
 using AbstractNeuralNetworks
 using StaticArrays
+using Test
 import Random
 Random.seed!(123)
 
