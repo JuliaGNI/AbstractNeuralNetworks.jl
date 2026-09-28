@@ -20,6 +20,7 @@ KernelAbstractions = "0.9"
 LinearAlgebra = "1"
 NeuralNetworkParameters = "0.4.1"
 Random = "1"
+SafeTestsets = "0.1.0"
 StaticArrays = "1.9.8"
 Zygote = "0.6, 0.7"
 
