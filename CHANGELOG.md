@@ -46,6 +46,14 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   `test/quality/doctests.jl` in `slow`. `LinearAlgebra` and `Random` get the compat bound `"1"`,
   which Aqua requires. The empty `test/architecture_tests.jl`, which held no test, is removed.
 
+- **`test/Project.toml` no longer repeats the root's bounds** (test environment only; no change
+  to the package). Its `[compat]` table loses the entries for `HDF5`, `KernelAbstractions`,
+  `LinearAlgebra`, `NeuralNetworkParameters`, `Random` and `StaticArrays`, which are dependencies
+  or weak dependencies of the root `Project.toml`. The rule: a test or docs environment carries a
+  `[compat]` entry only for a dependency that the root does not declare, so the root's bound
+  alone governs the tests. This removes the `"1"` bounds for `LinearAlgebra` and `Random` of the
+  entry above; the root keeps its own.
+
 - **`parameterlength(::Dense)` reads the bias flag as a `Bool`**, as the in-place call
   `(::Dense)(y, x, ps)` already does, instead of comparing it with `== true`. A `Dense` built with
   a non-`Bool` `use_bias`, such as `1`, now raises a `TypeError` in `parameterlength`; it returned
