@@ -49,9 +49,9 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
 - **`test/Project.toml` no longer repeats the root's bounds** (test environment only; no change
   to the package). Its `[compat]` table loses the entries for `HDF5`, `KernelAbstractions`,
   `LinearAlgebra`, `NeuralNetworkParameters`, `Random` and `StaticArrays`, which are dependencies
-  or weak dependencies of the root `Project.toml`. The rule: a test or docs environment carries a `[compat]` entry
-  only for a dependency that the root does not declare, so the root's bound alone governs the
-  tests. This removes the `"1"` bounds for `LinearAlgebra` and `Random` of the entry above; the
+  or weak dependencies of the root `Project.toml`. The rule: a test or docs environment carries a
+  `[compat]` entry only for a dependency that the root does not declare, so the root's bound
+  alone governs the tests. This removes the `"1"` bounds for `LinearAlgebra` and `Random` of the entry above; the
   root keeps its own.
 
 ## [0.8.0] — 2026-08-29
