@@ -46,10 +46,12 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   `test/quality/doctests.jl` in `slow`. `LinearAlgebra` and `Random` get the compat bound `"1"`,
   which Aqua requires. The empty `test/architecture_tests.jl`, which held no test, is removed.
 
-- **`parameterlength(::Dense)` reads the bias flag as a `Bool`**, as `initialparameters` already
-  does, instead of comparing it with `== true`. A `Dense` built with a non-`Bool` `use_bias`, such
-  as `1`, now raises a `TypeError` in `parameterlength` too; it already raised one on
-  initialisation. The tests assert `usebias(l)` and `!usebias(l)` directly.
+- **`parameterlength(::Dense)` reads the bias flag as a `Bool`**, as the in-place call
+  `(::Dense)(y, x, ps)` already does, instead of comparing it with `== true`. A `Dense` built with
+  a non-`Bool` `use_bias`, such as `1`, now raises a `TypeError` in `parameterlength`; it returned
+  the parameter count with the bias for `1` and `1.0`, and without it for `0`. Such a `Dense`
+  already could not be used: `initialparameters` and the out-of-place call have methods only for
+  `true` and `false`. The tests assert `usebias(l)` and `!usebias(l)` directly.
 
 ## [0.8.0] — 2026-08-29
 
