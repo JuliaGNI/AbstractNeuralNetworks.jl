@@ -56,5 +56,5 @@ function update!(::Dense, θ::NamedTuple, dθ::NamedTuple, η::AbstractFloat)
 end
 
 function parameterlength(::Dense{M, N, BIAS}) where {M, N, BIAS}
-    BIAS == true ? (M*N + N) : (M*N)
+    BIAS ? (M*N + N) : (M*N)
 end
