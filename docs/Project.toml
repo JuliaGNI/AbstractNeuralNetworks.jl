@@ -5,4 +5,5 @@ DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+Documenter = "1.19.0"
 DocumenterCitations = "1.5.0"
