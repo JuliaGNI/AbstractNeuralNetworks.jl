@@ -54,6 +54,13 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   alone governs the tests. This removes the `"1"` bounds for `LinearAlgebra` and `Random` of the
   entry above; the root keeps its own.
 
+- **`parameterlength(::Dense)` reads the bias flag as a `Bool`**, as the in-place call
+  `(::Dense)(y, x, ps)` already does, instead of comparing it with `== true`. A `Dense` built with
+  a non-`Bool` `use_bias`, such as `1`, now raises a `TypeError` in `parameterlength`; it returned
+  the parameter count with the bias for `1` and `1.0`, and without it for `0`. Such a `Dense`
+  already could not be used: `initialparameters` and the out-of-place call have methods only for
+  `true` and `false`. The tests assert `usebias(l)` and `!usebias(l)` directly.
+
 ## [0.8.0] — 2026-08-29
 
 **A whole set of parameters is a `NetworkParameters`.** `NeuralNetworkParameters` 0.3.0 removes
