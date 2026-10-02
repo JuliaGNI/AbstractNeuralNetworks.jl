@@ -38,6 +38,10 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
   `map_cotangent` public.
 
+- **Requires `NeuralNetworkParameters` 0.4.2** (compat only; no change to this package's own
+  behaviour). NNP 0.4.2 requires GeometricBase 0.15, which declares its stubs public and requires
+  Julia 1.11; this package's Julia floor is 1.11 already.
+
 - **The test suite follows the common layout** (no change to the package's behaviour). The test
   dependencies move from `[extras]`/`[targets]` to `test/Project.toml`; Aqua and Documenter are
   new test dependencies. `runtests.jl` runs the groups `core` and `slow`, and each test file
