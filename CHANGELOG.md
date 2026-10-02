@@ -1,17 +1,22 @@
 # Changelog
 
-## [Unreleased] — targeting 0.9.0
+## [0.9.0] — 2026-10-02
 
 **Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A
 method on `Dense`, `Linear` or `NeuralNetwork` is type piracy wherever it is written outside this
 package. GML defined three such methods, the 3-tensor methods on `Dense` and `Linear`, and the
 `save`/`load` methods for `NeuralNetwork` in its HDF5 extension.
 
-Breaking for GML: a GML that still defines the three 3-tensor methods fails to precompile
-against this release, with "Method overwriting is not permitted during Module precompilation".
-GML has to delete them in the same change that raises its `AbstractNeuralNetworks` bound. The
-`backend` keyword of `load(NeuralNetwork, …)` is removed; the network loads on the CPU and
-`changebackend(backend, nn)` moves it to a device with parameters included.
+### Breaking Changes
+
+- **A GML that still defines the three 3-tensor methods fails to precompile** against this
+  release, with "Method overwriting is not permitted during Module precompilation". GML has to
+  delete them in the same change that raises its `AbstractNeuralNetworks` bound.
+
+- **The `backend` keyword of `load(NeuralNetwork, …)` is removed**; the network loads on the CPU
+  and `changebackend(backend, nn)` moves it to a device with parameters included.
+
+### New Features
 
 - **`Dense`, `Linear` and `Affine` accept inputs of rank 3 or more.** Each layer applies its
   weight matrix to the first dimension, preserving the remaining dimensions. The implementation
@@ -22,21 +27,13 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   extension defines methods for HDF5 stores; filename forms are `NeuralNetworkParameters`' own
   methods. The extension loads automatically when HDF5 is available.
 
+### Dependencies and tests
+
 - **Requires `NeuralNetworkParameters` 0.4** (compat only; no change to this package's own
   behaviour). Under Zygote, NNP 0.4 calls the loss with the `NetworkParameters` itself rather than
   the wrapped `NamedTuple`, and converts the cotangent of each leaf with `storage_gradient` to the
   gradient with respect to that leaf's storage. A `Chain` still accepts a whole set as a bare
   `NamedTuple` as well: `SymbolicNeuralNetworks` builds symbolic networks whose parameters are one.
-
-- **Bug fix: a top-level `Zygote.pullback(applychain, layers, x, ps)` gives the storage gradient
-  of each leaf.** It returned the natural cotangent of each leaf in a `NetworkParameters`, which
-  NNP 0.4 reads as the gradient with respect to the storage. For a leaf whose `storage_gradient` is
-  not the identity, that gradient was wrong and came back as a dense matrix. It now converts each
-  leaf with NNP's `map_cotangent(storage_gradient, …)` and keeps the leaf's type; the return shape
-  is unchanged. A loss through a `Chain` was not affected. It also handles the case where the
-  parameter cotangent is `nothing` (when all layers have no parameters), which previously raised
-  a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
-  `map_cotangent` public.
 
 - **Requires `NeuralNetworkParameters` 0.4.2** (compat only; no change to this package's own
   behaviour). NNP 0.4.2 requires GeometricBase 0.15, which declares its stubs public and requires
@@ -57,6 +54,18 @@ GML has to delete them in the same change that raises its `AbstractNeuralNetwork
   `[compat]` entry only for a dependency that the root does not declare, so the root's bound
   alone governs the tests. This removes the `"1"` bounds for `LinearAlgebra` and `Random` of the
   entry above; the root keeps its own.
+
+### Bug Fixes
+
+- **Bug fix: a top-level `Zygote.pullback(applychain, layers, x, ps)` gives the storage gradient
+  of each leaf.** It returned the natural cotangent of each leaf in a `NetworkParameters`, which
+  NNP 0.4 reads as the gradient with respect to the storage. For a leaf whose `storage_gradient` is
+  not the identity, that gradient was wrong and came back as a dense matrix. It now converts each
+  leaf with NNP's `map_cotangent(storage_gradient, …)` and keeps the leaf's type; the return shape
+  is unchanged. A loss through a `Chain` was not affected. It also handles the case where the
+  parameter cotangent is `nothing` (when all layers have no parameters), which previously raised
+  a `MethodError`. Raises the `NeuralNetworkParameters` bound to 0.4.1, the release that makes
+  `map_cotangent` public.
 
 - **`parameterlength(::Dense)` reads the bias flag as a `Bool`**, as the in-place call
   `(::Dense)(y, x, ps)` already does, instead of comparing it with `== true`. A `Dense` built with
