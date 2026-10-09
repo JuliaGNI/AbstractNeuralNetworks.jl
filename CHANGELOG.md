@@ -11,6 +11,12 @@
   `doctests`, which an empty `ARGS` does not run; `Pkg.test(test_args = ["doctests"])` runs it. In
   CI the Doctests job stays their runner, so the test matrix no longer runs them a second time.
 
+- **`test/neural_network_constructors.jl` moves to `test/integration/neural_network_constructors.jl`.**
+  The test convention keeps a test file at the top level of `test/` only where it mirrors
+  `src/<name>.jl`, and there is no `src/neural_network_constructors.jl`. The file tests the
+  `NeuralNetwork` constructors of `src/neural_network.jl`, whose mirror `test/neural_network.jl`
+  already exists, so it goes to `test/integration/`.
+
 ## [0.9.0] — 2026-10-02
 
 **Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A

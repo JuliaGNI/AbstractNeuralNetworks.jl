@@ -11,7 +11,7 @@ if "core" in GROUPS
     @safetestset "Affine Layer" include("layers/affine.jl")
     @safetestset "Chain" include("chain.jl")
     @safetestset "Neural Network" include("neural_network.jl")
-    @safetestset "Neural Network constructors" include("neural_network_constructors.jl")
+    @safetestset "Neural Network constructors" include("integration/neural_network_constructors.jl")
     @safetestset "Parameters seam" include("integration/parameters_seam.jl")
     @safetestset "Static CPU Backend" include("static_cpu_backend.jl")
     @safetestset "Losses" include("losses.jl")
