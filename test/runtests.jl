@@ -18,6 +18,6 @@ if "core" in GROUPS
     @safetestset "Zygote pullback" include("pullback_for_applychain.jl")
     @safetestset "HDF5 save/load" include("integration/hdf5_ext.jl")
 end
-if "slow" in GROUPS
+if "doctests" in GROUPS
     @safetestset "Doctests" include("quality/doctests.jl")
 end
