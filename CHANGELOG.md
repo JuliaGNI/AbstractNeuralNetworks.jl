@@ -17,6 +17,15 @@
   `NeuralNetwork` constructors of `src/neural_network.jl`, whose mirror `test/neural_network.jl`
   already exists, so it goes to `test/integration/`.
 
+### Dependencies and tests
+
+- **Admits `NeuralNetworkParameters` 0.5** alongside 0.4.2 (compat only; no change to this
+  package's own behaviour). The downstream packages move to NNP 0.5, and they can resolve only if
+  this package admits it. NNP 0.5 gives an untouched leaf a zero gradient instead of `nothing`,
+  gives a leaf's gradient the leaf's element type, rejects a `NetworkParameters` with two numeric
+  element types, and makes `+` add storage leaf by leaf. The test suite passes against both 0.4.2
+  and 0.5.
+
 ## [0.9.0] — 2026-10-02
 
 **Methods that `GeometricMachineLearning` (GML) defined on this package's types move here.** A
