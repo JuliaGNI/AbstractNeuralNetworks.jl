@@ -5,6 +5,7 @@ const GROUPS = isempty(ARGS) ? ["core", "slow"] : ARGS
 if "core" in GROUPS
     @safetestset "Aqua" include("quality/aqua.jl")
     @safetestset "Utilities" include("utils/utils.jl")
+    @safetestset "Named tuples of arrays" include("utils/named_tuple_of_arrays.jl")
     @safetestset "Abstract Layer" include("layers/abstract.jl")
     @safetestset "Dense Layer" include("layers/dense.jl")
     @safetestset "Linear Layer" include("layers/linear.jl")
