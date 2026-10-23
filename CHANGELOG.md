@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased] — targeting 0.9.2
+
+### New Features
+
+- **`NamedTupleOfArrays` and `ArrayOrNamedTuple` are `public`.** A downstream package can now
+  write them in its method signatures as part of this package's API, in place of its own
+  `(:q, :p)` aliases. They stay unexported, so `using AbstractNeuralNetworks` brings no new name
+  into scope; import them as `using AbstractNeuralNetworks: NamedTupleOfArrays, ArrayOrNamedTuple`.
+  `TupleOfArrays` stays internal.
+
 ## [0.9.1] — 2026-10-11
 
 ### Changed

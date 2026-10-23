@@ -13,6 +13,8 @@ include("utils/add.jl")
 include("utils/zero_vector.jl")
 include("utils/named_tuple_of_arrays.jl")
 
+public NamedTupleOfArrays, ArrayOrNamedTuple
+
 export Activation, GenericActivation, IdentityActivation, SigmoidActivation
 
 include("activation.jl")
