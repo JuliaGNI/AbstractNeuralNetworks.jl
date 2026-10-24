@@ -2,7 +2,7 @@
 
 ## [Unreleased] — targeting 0.10.0
 
-### Changed
+### Breaking Changes
 
 - **Julia 1.12 is the floor** (`[compat] julia = "1.12"`, from 1.11). A breaking change under
   this package's pre-1.0 convention: a caller on Julia 1.11 can no longer install this version.
