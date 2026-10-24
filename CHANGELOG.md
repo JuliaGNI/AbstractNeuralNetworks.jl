@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased] — targeting 0.10.0
+
+### Breaking Changes
+
+- **Julia 1.12 is the floor** (`[compat] julia = "1.12"`, from 1.11). A breaking change under
+  this package's pre-1.0 convention: a caller on Julia 1.11 can no longer install this version.
+  Nothing in the package's code changes: it held no version-conditional code and no workaround
+  for the older floor, so there was nothing to delete.
+
 ## [0.9.2] — 2026-10-23
 
 ### New Features
