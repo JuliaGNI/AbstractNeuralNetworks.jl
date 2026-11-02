@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **The `[compat]` lower bounds resolve together, and the tests pass at them on Julia 1.12.**
+  The CI Downgrade job resolves `Project.toml` and `test/Project.toml` together at their lower
+  bounds and runs the tests there. Three floors are raised for this:
+  - `KernelAbstractions` from 0.9 to **0.9.34**. The test dependency JLArrays 0.3 needs GPUArrays
+    11, and GPUArrays 11 requires KernelAbstractions 0.9.28 or later in the General registry. The
+    GPUArrays 11.5 that the resolver selects uses the `@kernel unsafe_indices = true` option,
+    which KernelAbstractions supports from 0.9.34; at 0.9.28 JLArrays fails to precompile.
+  - `Zygote` (tests) from 0.6 to **0.6.74**, the first 0.6 release that precompiles and takes a
+    gradient on Julia 1.12. Zygote 0.6.35, which the merged resolve otherwise selects, fails in
+    `has_chain_rrule`, and the releases 0.6.56, 0.6.66, 0.6.71, 0.6.72 and 0.6.73 fail to
+    precompile.
+  - `Aqua` (tests) gets a compat entry, **0.8.14**. Without one the merged resolve selects Aqua
+    0.1.0. Aqua 0.8.14 is the first release whose piracy check handles the method table of Julia
+    1.12; before it, the check fails because `Core.TypeName` has no field `mt`.
+
 ## [0.9.3] — 2026-10-24
 
 ### Changed
