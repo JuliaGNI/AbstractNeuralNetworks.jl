@@ -25,3 +25,13 @@
   fails". `git ls-files test/chain_tests.jl` prints nothing; the test is in `test/chain.jl`.
 - **kind:** docs
 - **found:** 2026-09-26
+
+### K4 · `initialparameters(…, ::Chain, …)` builds its layer keys at run time, so `NeuralNetwork(model, backend)` does not infer a concrete type.
+
+- **location:** `src/chain.jl:69`
+- **evidence:** `keys = Tuple(Symbol("L$(i)") for i in eachindex(model))`.
+  `Base.return_types(NeuralNetwork, (Chain{…}, B))` gives
+  `NeuralNetwork{…, PT, B} where PT<:NetworkParameters{…}` for `B` = `POCLBackend`, `CPUStatic`
+  and a probe `KernelAbstractions.Backend`; the return type of `initialparameters` is not concrete.
+- **kind:** defect
+- **found:** #65
