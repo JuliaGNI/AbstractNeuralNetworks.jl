@@ -18,7 +18,7 @@ Aqua = "0.8.14"
 Documenter = "1.19.0"
 JLArrays = "0.5"
 SafeTestsets = "0.1.0"
-Zygote = "0.6.74, 0.7"
+Zygote = "0.7.5"
 
 [sources]
 AbstractNeuralNetworks = {path = ".."}
