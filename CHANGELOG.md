@@ -2,22 +2,56 @@
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- **Requires KernelAbstractions 0.10** (`KernelAbstractions = "0.10.5"`; 0.9 is no longer
+  accepted). An environment that holds KernelAbstractions 0.9 cannot install this release. On
+  0.10, `CPU()` is an alias of the OpenCL backend `POCLBackend`, which runs on PoCL. This package
+  launches no kernel, so nothing here runs differently: `zeros`, `ones` and `allocate` on `CPU()`
+  still return an `Array`, and `NeuralNetwork(model, CPU())` still defaults to `Float64`.
+  The floor is 0.10.5 because the test dependency JLArrays 0.5, the first release that accepts
+  KernelAbstractions 0.10, requires it. CUDA 6.5 and later cannot be installed beside
+  KernelAbstractions 0.9, and the backends of Metal 1.12 and CUDA 6.5 subtype
+  `KernelAbstractions.Backend` only on 0.10, so only there are they a `NeuralNetworkBackend`.
+
+- **`NeuralNetwork(model, backend)` defaults to `Float32` on every KernelAbstractions backend other
+  than `CPU()`.** The method now dispatches on `KernelAbstractions.Backend`, because 0.10 deprecates
+  `GPU` and makes it an alias of `Backend`. On 0.9, a backend that was not a subtype of `GPU`
+  raised "Default type for … not defined"; that method is removed, since no backend reaches it
+  any more. `CPU()` and `CPUStatic()` still default to `Float64`.
+
+- **`GPU` is no longer exported**; the package re-exported it from KernelAbstractions. After
+  `using AbstractNeuralNetworks` alone, the bare `GPU` raises `UndefVarError`. `CPU` stays
+  exported. Code that still needs the name writes `KernelAbstractions.GPU`, which prints a
+  deprecation warning, or uses `KernelAbstractions.Backend`. On KernelAbstractions 0.10, `GPU` is
+  an alias of `Backend`, so `CPU() isa GPU` is true. This is why the export is dropped: a
+  re-exported `GPU` printed no deprecation warning, so code that dispatches on it changed meaning
+  without notice. A package that re-exports `GPU` through this one, as GeometricMachineLearning
+  does, has to drop that export when it moves to this release.
+
 ### Changed
 
 - **The `[compat]` lower bounds resolve together, and the tests pass at them on Julia 1.12.**
   The CI Downgrade job resolves `Project.toml` and `test/Project.toml` together at their lower
   bounds and runs the tests there. Three floors are raised for this:
-  - `KernelAbstractions` from 0.9 to **0.9.34**. The test dependency JLArrays 0.3 needs GPUArrays
-    11, and GPUArrays 11 requires KernelAbstractions 0.9.28 or later in the General registry. The
-    GPUArrays 11.5 that the resolver selects uses the `@kernel unsafe_indices = true` option,
-    which KernelAbstractions supports from 0.9.34; at 0.9.28 JLArrays fails to precompile.
-  - `Zygote` (tests) from 0.6 to **0.6.74**, the first 0.6 release that precompiles and takes a
-    gradient on Julia 1.12. Zygote 0.6.35, which the merged resolve otherwise selects, fails in
-    `has_chain_rrule`, and the releases 0.6.56, 0.6.66, 0.6.71, 0.6.72 and 0.6.73 fail to
-    precompile.
+  - `GPUArraysCore` from 0.2.0 to **0.2.1**. JLArrays 0.5 needs GPUArrays 12.1 or later, and
+    GPUArrays 12.1 requires GPUArraysCore 0.2.1 in the General registry.
+  - `Zygote` (tests) from `0.6, 0.7` to **0.7.5**, the first release after 0.6.41 that does not
+    depend on GPUArrays. Zygote 0.6.42 through 0.7.4 cap it at 11 or lower and JLArrays 0.5 needs
+    12.1 or later, so none of them resolves beside it. Zygote 0.6.41 and earlier resolve, but the
+    merged resolve picks 0.6.35, which fails on Julia 1.12 in `has_chain_rrule`. The tests no
+    longer accept Zygote 0.6.
   - `Aqua` (tests) gets a compat entry, **0.8.14**. Without one the merged resolve selects Aqua
     0.1.0. Aqua 0.8.14 is the first release whose piracy check handles the method table of Julia
     1.12; before it, the check fails because `Core.TypeName` has no field `mt`.
+
+- **The tests use JLArrays 0.5** (`test/Project.toml`, from 0.3), the first JLArrays release that
+  accepts KernelAbstractions 0.10. The `JLArray` cases of the layer tests stay.
+
+- **CI runs the tests with `check_bounds: auto`**, from the action's default `yes`, in the test
+  matrix and in the Downgrade job. The workflow is the shared CI workflow of the package family,
+  whose compiled kernels on the PoCL `CPU()` backend cannot allocate under forced bounds checks.
+  This package launches no kernel; its suite passes in both modes.
 
 ## [0.9.3] — 2026-10-24
 

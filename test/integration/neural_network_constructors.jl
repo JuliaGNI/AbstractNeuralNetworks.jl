@@ -2,7 +2,8 @@ using AbstractNeuralNetworks
 using Test
 import Random
 
-using AbstractNeuralNetworks: params
+using AbstractNeuralNetworks: params, CPUStatic
+using JLArrays: JLBackend
 
 function test_different_cpu_constructors(::Type{T}) where {T <: Number}
     model = Chain(Dense(4, 5, tanh), Linear(5, 4))
@@ -21,6 +22,13 @@ end
 test_different_cpu_constructors(Float16)
 test_different_cpu_constructors(Float32)
 test_different_cpu_constructors(Float64)
+
+# Without an element type, `CPU()` and `CPUStatic()` default to `Float64` and every other
+# KernelAbstractions backend to `Float32`; `JLBackend` stands in for a device backend.
+
+@test eltype(params(NeuralNetwork(Chain(Dense(4, 5, tanh)), CPU())).L1.W) == Float64
+@test eltype(params(NeuralNetwork(Chain(Dense(4, 5, tanh)), CPUStatic())).L1.W) == Float64
+@test eltype(params(NeuralNetwork(Chain(Dense(4, 5, tanh)), JLBackend())).L1.W) == Float32
 
 # `NeuralNetwork` stores `PT <: NetworkParameters`. A bare layer's `initialparameters` returns the
 # plain `NamedTuple` its functor takes, so it cannot be stored -- every entry point should say that

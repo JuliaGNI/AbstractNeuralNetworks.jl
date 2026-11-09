@@ -1,6 +1,6 @@
 name = "AbstractNeuralNetworks"
 uuid = "60874f82-5ada-4c70-bd1c-fa6be7711c8a"
-version = "0.9.3"
+version = "0.10.0"
 authors = ["Michael Kraus"]
 
 [deps]
@@ -19,9 +19,9 @@ HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 HDF5Ext = "HDF5"
 
 [compat]
-GPUArraysCore = "0.2.0"
+GPUArraysCore = "0.2.1"
 HDF5 = "0.17"
-KernelAbstractions = "0.9.34"
+KernelAbstractions = "0.10.5"
 LinearAlgebra = "1"
 NeuralNetworkParameters = "0.4.2, 0.5"
 Random = "1"

@@ -61,16 +61,14 @@ function NeuralNetwork(arch::Architecture, model::Model, ::Type{T}; kwargs...) w
     NeuralNetwork(arch, model, CPU(), T; kwargs...)
 end
 
-function NeuralNetwork(model::Union{Architecture, Model}, backend::GPU; kwargs...)
+function NeuralNetwork(
+        model::Union{Architecture, Model}, backend::KernelAbstractions.Backend;
+        kwargs...)
     NeuralNetwork(model, backend, Float32; kwargs...)
 end
 
 function NeuralNetwork(model::Union{Architecture, Model}, backend::Union{CPU, CPUStatic}; kwargs...)
     NeuralNetwork(model, backend, Float64; kwargs...)
-end
-
-function NeuralNetwork(model::Union{Architecture, Model}, backend::NeuralNetworkBackend; kwargs...)
-    error("Default type for $(backend) not defined.")
 end
 
 function NeuralNetwork(model::Union{Architecture, Model}; kwargs...)
