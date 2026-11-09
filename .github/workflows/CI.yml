@@ -104,6 +104,12 @@ jobs:
             - uses: julia-actions/julia-buildpkg@v1
             - uses: julia-actions/julia-runtest@v1
               with:
+                  # `auto`, not the action's default `yes`. A bounds check defeats `@inbounds`, so
+                  # the local `MMatrix` and `MVector` of a static kernel escape to the heap, and a
+                  # kernel that a compiled backend runs cannot allocate: with `yes`, every such
+                  # testset throws `KernelException` on a host backend that compiles kernels. The
+                  # pre-commit probes run with `auto` too.
+                  check_bounds: auto
                   coverage: ${{ env.COVERAGE }}
             - uses: julia-actions/julia-processcoverage@v1
               if: env.COVERAGE == 'true'
@@ -158,6 +164,9 @@ jobs:
             - uses: julia-actions/julia-buildpkg@v1
             - uses: julia-actions/julia-runtest@v1
               with:
+                  # The same `auto` as the matrix job above, and for the same reason: a kernel
+                  # that a compiled backend runs cannot allocate.
+                  check_bounds: auto
                   # Keep the resolved floors: a re-resolve would move them back up, and the
                   # Dependabot default would force the newest version of the bumped entry.
                   allow_reresolve: false
