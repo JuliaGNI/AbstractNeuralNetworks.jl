@@ -7,7 +7,7 @@ using StaticArrays
 using Random
 using ZygoteRules
 
-export CPU, GPU
+export CPU
 
 include("utils/add.jl")
 include("utils/zero_vector.jl")

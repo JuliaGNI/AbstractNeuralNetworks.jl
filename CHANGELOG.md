@@ -20,6 +20,15 @@
   raised "Default type for … not defined"; that method is removed, since no backend reaches it
   any more. `CPU()` and `CPUStatic()` still default to `Float64`.
 
+- **`GPU` is no longer exported**; the package re-exported it from KernelAbstractions. After
+  `using AbstractNeuralNetworks` alone, the bare `GPU` raises `UndefVarError`. `CPU` stays
+  exported. Code that still needs the name writes `KernelAbstractions.GPU`, which prints a
+  deprecation warning, or uses `KernelAbstractions.Backend`. On KernelAbstractions 0.10, `GPU` is
+  an alias of `Backend`, so `CPU() isa GPU` is true. This is why the export is dropped: a
+  re-exported `GPU` printed no deprecation warning, so code that dispatches on it changed meaning
+  without notice. A package that re-exports `GPU` through this one, as GeometricMachineLearning
+  does, has to drop that export when it moves to this release.
+
 ### Changed
 
 - **The `[compat]` lower bounds resolve together, and the tests pass at them on Julia 1.12.**
@@ -35,11 +44,6 @@
   - `Aqua` (tests) gets a compat entry, **0.8.14**. Without one the merged resolve selects Aqua
     0.1.0. Aqua 0.8.14 is the first release whose piracy check handles the method table of Julia
     1.12; before it, the check fails because `Core.TypeName` has no field `mt`.
-
-- **The package still exports `GPU`, which is an alias of `Backend` on KernelAbstractions 0.10.**
-  So `CPU() isa GPU` is true, and a use of `GPU` through this package prints no deprecation
-  warning, although the qualified `KernelAbstractions.GPU` does. Code that dispatches on `GPU`
-  therefore changes meaning without notice. Write `KernelAbstractions.Backend` in new code.
 
 - **The tests use JLArrays 0.5** (`test/Project.toml`, from 0.3), the first JLArrays release that
   accepts KernelAbstractions 0.10. The `JLArray` cases of the layer tests stay.
