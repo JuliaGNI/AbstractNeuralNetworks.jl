@@ -10,8 +10,9 @@
   launches no kernel, so nothing here runs differently: `zeros`, `ones` and `allocate` on `CPU()`
   still return an `Array`, and `NeuralNetwork(model, CPU())` still defaults to `Float64`.
   The floor is 0.10.5 because the test dependency JLArrays 0.5, the first release that accepts
-  KernelAbstractions 0.10, requires it. Metal 1.12 and CUDA 6.5 accept only KernelAbstractions
-  0.10, so a package that depends on this one can now resolve them.
+  KernelAbstractions 0.10, requires it. CUDA 6.5.1 and later require KernelAbstractions 0.10, and
+  the backends of Metal 1.12 and CUDA 6.5 subtype `KernelAbstractions.Backend` only on 0.10, so
+  only there are they a `NeuralNetworkBackend`.
 
 - **`NeuralNetwork(model, backend)` defaults to `Float32` on every KernelAbstractions backend other
   than `CPU()`.** The method now dispatches on `KernelAbstractions.Backend`, because 0.10 deprecates
